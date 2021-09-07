@@ -1,0 +1,8 @@
+-f ./vfiles/design/InstructionFetch.vfile
+-f ./vfiles/design/Decode.vfile
+-f ./vfiles/design/ExecuteOne.vfile
+-f ./vfiles/design/ExecuteTwo.vfile
+-f ./vfiles/design/LoadStore.vfile
+-f ./vfiles/design/IDMemory.vfile
+
+-sv ./rtl_src/Core.sv
