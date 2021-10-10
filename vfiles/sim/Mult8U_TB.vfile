@@ -1,0 +1,3 @@
+-f ./vfiles/design/Mult8U.vfile
+
+-sv ./sim/Mult8U_TB.sv
