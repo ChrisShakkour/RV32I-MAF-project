@@ -1,0 +1,21 @@
+
+this is a text document to explain how to install and use the riscv-gnu-toolchain:
+
+git repo: https://github.com/riscv-collab/riscv-gnu-toolchain
+
+installation steps in a nutshell:
+      1. Clone repo.
+      2. install presequities:
+      	 	 sudo apt-get install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+      3. create a directory for installation, mkdir <some repo>
+      4. add repo to PATH:
+      	     edit ~/.bashrc file with the following command on the end of file,
+	     export PATH="<some repo>/bin:$PATH"
+      5. configure installation:
+      	     run the configure script inside the toolchain repo:
+	     ./riscv-gnu-toolchain/configure --prefix=<real path of created repo> --with-arch=rv32i --with-abi=ilp32
+	     --with-arch can be changed according to the arch, rv32i, rv32im, rv32ima, rv32imaf.
+	     --with-abi  can be changed ... search in the configure script to see the options.
+      6. execute: make
+
+how to use:
