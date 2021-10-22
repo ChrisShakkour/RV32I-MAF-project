@@ -1,0 +1,4 @@
+-sv ./HDL/packages/memory_pkg.sv
+
+-sv ./HDL/interface/memory_interface.sv
+

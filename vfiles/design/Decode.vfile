@@ -1,1 +1,1 @@
--sv ./rtl_src/core/Decode.sv
+-sv ./HDL/rtl_src/core/Decode.sv
