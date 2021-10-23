@@ -26,7 +26,7 @@ echo "VFILES = $VFILES"
 export SCRIPTS=$GIT_ROOT/scripts
 echo "SCRIPTS = $SCRIPTS"
 
-export LINKER=$SCRIPTS/linker.sh
+export LINKER=$SCRIPTS/linker/basic_linker.ld
 echo "LINKER = $LINKER"
 
 echo " "
