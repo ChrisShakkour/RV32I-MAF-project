@@ -18,8 +18,8 @@ import os
 import sys
 
 
-c_2_asm   = 'riscv32-unknown-elf-gcc -S {} -march={} -mabi={} -o {}'                       # + c_file + march + mabi + other options
-asm_2_elf = 'riscv32-unknown-elf-gcc -c {} -march={} -mabi={} -T {} -o {}'           # + asm_file + march + mabi + linker  
+c_2_asm   = 'riscv32-unknown-elf-gcc -S {} -ffreestanding -march={} -mabi={} -o {}'                       # + c_file + march + mabi + other options
+asm_2_elf = 'riscv32-unknown-elf-gcc -O3 -nostartfiles -D__riscv_ {} -march={} -mabi={} -T {} -o {}'           # + asm_file + march + mabi + linker  
 elf_2_txt = 'riscv32-unknown-elf-objdump -gd {} > {}'
 elf_2_sv  = 'riscv32-unknown-elf-objcopy --srec-len 1 --output-target=verilog {} {}' # + elf file
 
@@ -78,7 +78,7 @@ def parse_args():
 
 
 '''
-
+check if path exists
 '''
 def path_exists(src_file):
     if os.path.exists(src_file):
@@ -88,7 +88,7 @@ def path_exists(src_file):
 
     
 '''
-
+check if dir exists
 '''
 def dir_exist(src_dir):
     if os.path.isdir(src_dir):
@@ -98,14 +98,14 @@ def dir_exist(src_dir):
 
 
 '''
-
+get extension .<ext>
 '''
 def get_extension(full_path):
     return full_path[-1]
 
 
 '''
-
+get filename
 '''
 def get_filename(full_path):
     name=full_path.split('/')[-1]
@@ -113,37 +113,49 @@ def get_filename(full_path):
 
 
 '''
-
+run assemble 
+generation command
 '''
 def gen_asm(c_file, arch, abi, dest):
-    os.system(c_2_asm.format(c_file, arch, abi, dest))
+    print('generating asemble file...')
+    cmd=c_2_asm.format(c_file, arch, abi, dest)
+    print('command : %s' %(cmd))
+    os.system(cmd)
     return 0
 
 '''
-
+run executable
+generation command
 '''
 def gen_elf(asm_file, arch, abi, linker, dest):
-    os.system(asm_2_elf.format(asm_file, arch, abi, linker, dest))
+    print('generating executable file...')
+    cmd=asm_2_elf.format(asm_file, arch, abi, linker, dest)
+    print('command : %s' %(cmd))
+    os.system(cmd)
     return 0
 
 '''
-
+run text
+generation command
 '''
 def gen_txt(elf_file, dest):
+    print('generating text file...')
     os.system(elf_2_txt.format(elf_file, dest))
     return 0
 
 
 '''
-
+run generate memory image,
+systemverilog file
 '''
 def gen_mem(elf_file, dest):
+    print('generating memory file...')
     os.system(elf_2_sv.format(elf_file, dest))
     return 0
 
 
 '''
-
+main:)
 '''
 def main():
     args=parse_args()
@@ -164,7 +176,7 @@ def main():
     if ext == 'c':
         gen_asm(src_realpath, args.arch, args.abi, dest_realpath+'.s')
     if args.elf is not None:
-        gen_elf(dest_realpath+'.s', args.arch, args.abi, '$LINKER', dest_realpath+'.elf')
+        gen_elf(dest_realpath+'.s', args.arch, args.abi, '{}'.format(os.getenv('LINKER')), dest_realpath+'.elf')
     if args.txt is not None:
         gen_txt(dest_realpath+'.elf', dest_realpath+'.txt')
     if args.mem is not None:
