@@ -1,0 +1,3 @@
+-f ./vfiles/design/Memory.vfile
+
+-sv ./verif/rtl_sim/IMem_TB.sv
