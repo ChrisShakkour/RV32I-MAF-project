@@ -5,7 +5,7 @@ design file: /home/christians/git/RV32I-MAF-project/HDL/rtl_src/core_top/memory/
 
 */
 
-`timescale 1ns/1ps
+`timescale 1ns/1ns
 
 module IMem_TB();
 
@@ -53,7 +53,7 @@ module IMem_TB();
    endtask // reset()
 
    task load_mem();
-      $display("Reading instruction memory image from file: %s", IMEM_IMAGE);
+      $display("time=%0t[ns]: Loading instruction memory from file: %s\n", $time, IMEM_IMAGE);
       $readmemh(IMEM_IMAGE, DUT_IMem.imem_ram, 0);
    endtask // load_mem
    
@@ -62,8 +62,27 @@ module IMem_TB();
       addr=address;
       #(PERIOD) req=1'b0;
    endtask // read_instruction   
+
+   task display(int addr, reg [WORD_W-1:0] data);
+      $display("time=%t[ns]: address=0x_%h -> instruction=0x_%h", $time, addr, data);
+   endtask // display
+
+   always @(posedge clk) 
+     if(req) display(addr, data);
+
+   task test_begun();
+      $display("\n #############################");
+      $display(" Starting testbench stimuli\n");
+   endtask
    
+   task end_of_test();
+      $display("\n End of test");
+      $display(" #############################\n");
+   endtask
+      
+        
    initial begin
+      test_begun();
       #(PERIOD) init();
       #(2*PERIOD) load_mem;
       #(2*PERIOD) clk_en=1'b1;
@@ -75,6 +94,8 @@ module IMem_TB();
       #(2*PERIOD) read_instruction(32'h00004001);
       // assert shall fail on unvalid instruction,
       // address shall be divided by 4 with zero remainder.
-      #(4*PERIOD) $finish;
+      #(4*PERIOD);
+      end_of_test();
+      $finish;
    end
 endmodule
