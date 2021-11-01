@@ -13,6 +13,7 @@ package instructions_pkg;
    parameter integer FUNCT5_W=5;
    parameter integer FUNCT7_W=7;
 
+
    /* R-type commands:
     ADD, SUB, SLL, SLT,
     SLTU, XOR, SRL, SRA,
