@@ -6,6 +6,11 @@
 
 module Decode
   (
+     input logic clk,
+     input logic rstn
+     );
+
+
    input logic          clk,
    input logic          rstn,
    input t_instruction  InstructionPs2,

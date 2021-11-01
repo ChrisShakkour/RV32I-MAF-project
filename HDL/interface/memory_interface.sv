@@ -15,82 +15,77 @@
 
 import memory_pkg::*;
 
-interface mem_read;
+interface mem_read_only;
    
-   logic                      M_CLK;
-   logic 		      ENABLE;
+   logic 		      REQ;
    logic 		      ADDR_ERR;
-   logic [1:0] 		      WORD;
    logic [MEM_ADDR_WIDTH-1:0] ADDR;
-   logic [MEM_WORD_WIDTH-1:0] DATAIN;
-   logic [MEM_WORD_WIDTH-1:0] DATAOUT;
+   logic [MEM_WORD_WIDTH-1:0] DATA;
 
    
    /* read memory side */
-   modport mem_read_port
+   modport mem_side
      (
       // inputs:
-      input  M_CLK,
-      input  ENABLE,
-      input  WORD,
+      input  REQ,
       input  ADDR,
       // outputs:
-      output DATAOUT,
+      output DATA,
       output ADDR_ERR
       );
 
    /* read ext side*/
-   modport ext_read_port
+   modport core_side
      (
       // inputs;
-      input  DATAIN,
+      input  DATA,
       input  ADDR_ERR,
       // outputs:
-      output M_CLK,
-      output ENABLE,
-      output WORD,
+      output REQ,
       output ADDR
       );
 
-endinterface // mem_read
+endinterface // mem_read_only
 
 
 
-interface mem_write;
+interface mem_read_write;
    
-   logic     M_CLK;
-   logic     ENABLE;
-   logic     ADDR_ERR;
-   logic [1:0] WORD;
+   logic                      REQ;
+   logic                      WRITE_EN;
+   logic                      ADDR_ERR;
+   logic [1:0]                N_BYTES;
    logic [MEM_ADDR_WIDTH-1:0] ADDR;
-   logic [MEM_WORD_WIDTH-1:0] DATAIN;
-   logic [MEM_WORD_WIDTH-1:0] DATAOUT;
+   logic [MEM_WORD_WIDTH-1:0] W_DATA;
+   logic [MEM_WORD_WIDTH-1:0] R_DATA;
    
    
    /* write memory side */
-   modport mem_write_port
+   modport mem_side
      (
       // inputs;
-      input  M_CLK,
-      input  ENABLE,
-      input  WORD,
+      input  REQ,
+      input  WRITE_EN,
+      input  N_BYTES,
       input  ADDR,
-      input  DATAIN,
+      input  W_DATA,
       // outputs:
-      output ADDR_ERR
+      output ADDR_ERR,
+      output R_DATA
       );
 
    /* write ext side*/
-   modport ext_write_port
+   modport core_side
      (
       // inputs:
       input  ADDR_ERR,
+      input  R_DATA,
       // outputs;
-      output M_CLK,
-      output ENABLE,
-      output WORD,
+      output REQ,
+      output WRITE_EN,
+      output N_BYTES,
       output ADDR,
-      output DATAOUT
+      output W_DATA
       );
 
 endinterface // mem_write

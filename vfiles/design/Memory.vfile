@@ -2,3 +2,4 @@
 
 -sv ./HDL/interface/memory_interface.sv
 
+-sv ./HDL/rtl_src/core_top/memory/IMem.sv

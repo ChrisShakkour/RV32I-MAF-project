@@ -26,7 +26,7 @@ echo "VFILES = $VFILES"
 export SCRIPTS=$GIT_ROOT/scripts
 echo "SCRIPTS = $SCRIPTS"
 
-export LINKER=$SCRIPTS/linker/basic_linker.ld
+export LINKER=$SCRIPTS/linker/linker.ld
 echo "LINKER = $LINKER"
 
 echo " "
@@ -46,3 +46,6 @@ echo "compile_gcc = python3 $SCRIPTS/tools/compile_gcc.py"
 
 alias maketb="py $SCRIPTS/tools/MakeTB.py"
 echo "maketb = python3 $SCRIPTS/tools/MakeTB.py"
+
+alias rmtilda="find . -type f -name '*~' -exec rm -f '{}' \;"
+echo "rmtilda = find . -type f -name '*~' -exec rm -f '{}' \;"
