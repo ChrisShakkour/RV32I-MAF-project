@@ -42,6 +42,7 @@ module Memory
     input logic clk,
     mem_read_only.mem_side inst_fetch_port,
     mem_read_write.mem_side load_store_port
+    // monitors/csr ports
     );
 
    /* instruction memory module */
