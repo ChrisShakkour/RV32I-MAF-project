@@ -9,6 +9,9 @@ design file: /home/christians/git/RV32I-MAF-project/HDL/rtl_src/core_top/memory/
 
 module DMem_TB;
    import memory_pkg::*;
+
+   parameter string DEADBEEF="DEADBEEF";
+   parameter string ACED="ACED";
    
    parameter string DMEM_IMAGE;
    parameter integer DMEM_SIZE=memory_pkg::DMEM_BYTES;
@@ -71,13 +74,14 @@ module DMem_TB;
       $readmemh(DMEM_IMAGE, DUT_DMem.dmem_ram, START_ADDR);
    endtask // load_mem
    
-   task display(int addr, reg [WORD_W-1:0] data);
-      $display("time=%t[ns]: address=0x_%h, instruction=0x_%h", $time, addr, data);
+   task display(int addr, reg [WORD_W-1:0] load_data, store_data);
+      $display("time=%t[ns]: address=0x_%h, load=0x_%h, store=0x_%h", $time, addr, load_data, store_data);
    endtask // display
-   /*
+   
    always @(posedge clk) 
-     if(req) display(addr, data);
-*/
+     display(addr, load_data, store_data);
+
+   
    task test_begun();
       $display("\n #############################");
       $display(" Starting testbench stimuli\n");
@@ -89,7 +93,7 @@ module DMem_TB;
    endtask
 
 
-   task LW(address);
+   task LW(int address);
       req        =1'b1;
       addr       =address;
       write_en   =1'b0;
@@ -98,7 +102,7 @@ module DMem_TB;
       #(PERIOD)  req=1'b0;
    endtask
 
-   task LH(address);
+   task LH(int address);
       req        =1'b1;
       addr       =address;
       write_en   =1'b0;
@@ -107,7 +111,7 @@ module DMem_TB;
       #(PERIOD)  req=1'b0;
    endtask
 
-   task LHU(address);
+   task LHU(int address);
       req        =1'b1;
       addr       =address;
       write_en   =1'b0;
@@ -116,7 +120,7 @@ module DMem_TB;
       #(PERIOD)  req=1'b0;
    endtask
 
-   task LB(address);
+   task LB(int address);
       req        =1'b1;
       addr       =address;
       write_en   =1'b0;
@@ -125,7 +129,7 @@ module DMem_TB;
       #(PERIOD)  req=1'b0;
    endtask
 
-   task LBU(address);
+   task LBU(int address);
       req        =1'b1;
       addr       =address;
       write_en   =1'b0;
@@ -134,7 +138,7 @@ module DMem_TB;
       #(PERIOD)  req=1'b0;
    endtask
 
-   task SW(address, data);
+   task SW(int address, reg [WORD_W-1:0] data);
       req        =1'b1;
       addr       =address;
       write_en   =1'b1;
@@ -144,7 +148,7 @@ module DMem_TB;
       #(PERIOD)  req=1'b0;
    endtask
    
-   task SH(address, data);
+   task SH(int address, reg [WORD_W-1:0] data);
       req        =1'b1;
       addr       =address;
       write_en   =1'b1;
@@ -154,7 +158,7 @@ module DMem_TB;
       #(PERIOD)  req=1'b0;
    endtask
 
-   task SB(address, data);
+   task SB(int address, reg [WORD_W-1:0] data);
       req        =1'b1;
       addr       =address;
       write_en   =1'b1;
@@ -170,14 +174,34 @@ module DMem_TB;
       #(PERIOD) init();
       #(2*PERIOD) load_mem;
       #(2*PERIOD) clk_en=1'b1;
-      #(2.5*PERIOD);
-      for(int i=0; i<20; i++)
-	#(2*PERIOD);
+      #(4.5*PERIOD);
+      for(int i=0; i<8; i++)
+	#(PERIOD) SB(START_ADDR+i, DEADBEEF[i]);
+      #(6*PERIOD)
+      for(int i=0; i<8; i++) begin
+	 LB(START_ADDR+i);
+	 #(1*PERIOD);
+      end
       
-      //assert shall fail on unavailable address
-      //#(2*PERIOD) read_instruction(32'h00004001);
-      // assert shall fail on unvalid instruction,
-      // address shall be divided by 4 with zero remainder.
+      SB(START_ADDR+20, 32'hDEADBEEF);
+      #(1*PERIOD);
+      SH(START_ADDR+24, 32'hDEADBEEF);
+      #(1*PERIOD);
+      SW(START_ADDR+28, 32'hDEADBEEF);
+      #(1*PERIOD);
+
+      LB(START_ADDR+20);
+      #(1*PERIOD);
+      LBU(START_ADDR+20);
+      #(1*PERIOD);
+      LH(START_ADDR+24);
+      #(1*PERIOD);
+      LHU(START_ADDR+24);
+      #(1*PERIOD);
+      LW(START_ADDR+28);
+      #(1*PERIOD);
+      display(addr, load_data, store_data);
+	
       #(4*PERIOD);
       end_of_test();
       $finish;
