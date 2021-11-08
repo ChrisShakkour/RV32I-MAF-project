@@ -1,5 +1,6 @@
 -sv ./HDL/packages/memory_pkg.sv
-
 -sv ./HDL/interface/memory_interface.sv
 
 -sv ./HDL/rtl_src/core_top/memory/IMem.sv
+-sv ./HDL/rtl_src/core_top/memory/DMem.sv
+-sv ./HDL/rtl_src/core_top/Memory.sv

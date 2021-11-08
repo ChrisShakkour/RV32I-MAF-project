@@ -18,10 +18,10 @@ import os
 import sys
 
 
-c_2_asm   = 'riscv32-unknown-elf-gcc -S {} -ffreestanding -march={} -mabi={} -o {}'                       # + c_file + march + mabi + other options
-asm_2_elf = 'riscv32-unknown-elf-gcc -O3 -nostartfiles -D__riscv_ {} -march={} -mabi={} -T {} -o {}'           # + asm_file + march + mabi + linker  
+c_2_asm   = 'riscv32-unknown-elf-gcc -S {} -ffreestanding -march={} -mabi={} -o {}'     
+asm_2_elf = 'riscv32-unknown-elf-gcc -O3 -nostartfiles -D__riscv_ {} -march={} -mabi={} -T {} -o {}'  
 elf_2_txt = 'riscv32-unknown-elf-objdump -gd {} > {}'
-elf_2_sv  = 'riscv32-unknown-elf-objcopy --srec-len 1 --output-target=verilog {} {}' # + elf file
+elf_2_mem = 'riscv32-unknown-elf-objcopy --srec-len 1 --output-target=verilog {} {}' 
 
 
 '''
@@ -140,17 +140,21 @@ generation command
 '''
 def gen_txt(elf_file, dest):
     print('generating text file...')
-    os.system(elf_2_txt.format(elf_file, dest))
+    cmd=elf_2_txt.format(elf_file, dest)
+    print('command : %s' %(cmd))
+    os.system(cmd)
     return 0
 
 
 '''
-run generate memory image,
-systemverilog file
+run generate memory
+image, .mem file
 '''
 def gen_mem(elf_file, dest):
     print('generating memory file...')
-    os.system(elf_2_sv.format(elf_file, dest))
+    cmd=elf_2_mem.format(elf_file, dest)
+    print('command : %s' %(cmd))
+    os.system(cmd)
     return 0
 
 
@@ -180,7 +184,7 @@ def main():
     if args.txt is not None:
         gen_txt(dest_realpath+'.elf', dest_realpath+'.txt')
     if args.mem is not None:
-        gen_mem(dest_realpath+'.elf', dest_realpath+'.sv')
+        gen_mem(dest_realpath+'.elf', dest_realpath+'.mem')
         
     
         

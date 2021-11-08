@@ -1,21 +1,16 @@
 /*
- ##################################
- ### interface modport explained:
- ##################################
-                    
-                     |
-  mem_read_port   -> | -> ext_read_port
-                     |
-   <Memory side>     |   <Design side> 
-                     |
-  mem_write_port  <- | <- ext_write_port
-                     |
- */
-
-
-import memory_pkg::*;
-
+ ######################################
+ ### interface mem_read_only explained:
+ ### instruction memory interface
+ ######################################
+   _________________________________            
+                    |
+    mem_side     -> | -> core_side
+                    |
+   ---------------------------------
+ */ 
 interface mem_read_only;
+   import memory_pkg::*;
    
    logic 		      REQ;
    logic 		      ADDR_ERR;
@@ -34,6 +29,7 @@ interface mem_read_only;
       output ADDR_ERR
       );
 
+   
    /* read ext side*/
    modport core_side
      (
@@ -49,23 +45,38 @@ endinterface // mem_read_only
 
 
 
+/*
+ #######################################
+ ### interface mem_read_write explained:
+ ### data memory interface
+ #######################################
+   _____________________________________            
+                       |
+   LOAD:  mem_side  -> | -> core_side
+   STORE: mem_side  <- | <- core_side
+                       |
+   --------------------------------------
+ */
 interface mem_read_write;
+   import memory_pkg::*;
    
    logic                      REQ;
    logic                      WRITE_EN;
    logic                      ADDR_ERR;
+   logic 		      L_UNSIGNED;
    logic [1:0]                N_BYTES;
    logic [MEM_ADDR_WIDTH-1:0] ADDR;
    logic [MEM_WORD_WIDTH-1:0] W_DATA;
    logic [MEM_WORD_WIDTH-1:0] R_DATA;
    
    
-   /* write memory side */
+   /* Memory side */
    modport mem_side
      (
       // inputs;
       input  REQ,
       input  WRITE_EN,
+      input  L_UNSIGNED,
       input  N_BYTES,
       input  ADDR,
       input  W_DATA,
@@ -74,7 +85,8 @@ interface mem_read_write;
       output R_DATA
       );
 
-   /* write ext side*/
+   
+   /* Core side*/
    modport core_side
      (
       // inputs:
@@ -83,6 +95,7 @@ interface mem_read_write;
       // outputs;
       output REQ,
       output WRITE_EN,
+      output L_UNSIGNED,
       output N_BYTES,
       output ADDR,
       output W_DATA

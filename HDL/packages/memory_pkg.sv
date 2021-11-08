@@ -40,6 +40,25 @@ package memory_pkg;
    parameter integer ERR_ENUMS_WIDTH=2;
 
 
+   // n_bytes signal shall be 
+   // driven by the following 
+   // byte codes.
+   parameter LS_SINGLE=2'b00;    //LoadStore_Single byte, LB, LBU, SB
+   parameter LS_HALFWORD=2'b01;   //LoadStore Halfword,    LH, LHU, SH
+   parameter LS_WORD=2'b1x;      //LoadStore Word,        LW, SW
+   parameter L_UNSIGNED=1'b1;    //Load Unsigned,         LBU, LHU
+   
+		       
+   typedef enum logic [1:0]
+   {
+    WORD     = 2'b00,
+    SINGLE   = 2'b01,
+    HALFWORD = 2'b10
+    } e_num_bytes;
+   
+
+   
+
    /*   
    typedef enum [ERR_ENUMS_WIDTH-1:0] logic
 				      {	       

@@ -104,11 +104,4 @@ module Core
            .Data_WriteBack_Ps6 (Data_rd_Ps6)
 	);
    
-   IDMemory
-     IDMemory_inst
-       (
-	.clk(clk),
-	.rstn(rstn)
-	);
-
 endmodule // Core
