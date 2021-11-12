@@ -1,0 +1,4 @@
+-f ./vfiles/design/Memory.vfile
+-f ./vfiles/design/Core.vfile
+
+-sv ./HDL/rtl_src/CoreTop.sv

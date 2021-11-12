@@ -1,8 +1,9 @@
+-sv ./HDL/packages/instructions_pkg.sv
+
 -f ./vfiles/design/InstructionFetch.vfile
 -f ./vfiles/design/Decode.vfile
--f ./vfiles/design/ExecuteOne.vfile
--f ./vfiles/design/ExecuteTwo.vfile
+-f ./vfiles/design/Execute.vfile
 -f ./vfiles/design/LoadStore.vfile
--f ./vfiles/design/IDMemory.vfile
+-f ./vfiles/design/WriteBack.vfile
 
--sv ./rtl_src/Core.sv
+-sv ./HDL/rtl_src/core_top/Core.sv
