@@ -4,100 +4,109 @@
  
  */
 
+`include "../../../packages/defines.sv"
+
 module Decode
+  import instructions_pkg::*;
   (
-     input logic clk,
-     input logic rstn
-     );
+   input logic                       clk,
+   input logic                       rstn,
+   input logic [XLEN-1:0]            Instruction,
+   input logic [MSB_REG_FILE-1:0]    rd_Ps6,
+   input logic                       CtrlWriteEn, //from Ps6
+   input logic                       DataRd,      //from Ps6
 
+   output logic [XLEN-1:0]           AluDataIn1,
+   output logic [XLEN-1:0]           AluDataIn2,
+   output logic [MSB_REG_FILE-1:0]   rd,   
+   output logic [INST_WIDTH-1:0]     ir
 
-   input logic          clk,
-   input logic          rstn,
-   input t_instruction  InstructionPs2,
-   input t_Waddr        Ctrl_rd_Ps6,
-   input logic          Ctrl_WriteEn_Ps6,
-   input t_xlen         Data_rd_Ps6,
-
-   output t_xlen        Data_in2_Ps3,
-   output t_xlen        Data_in1_Ps3,
-   output logic [2 :0]  Ctrl_ALU_Ps3,
-   output logic [4 :0]  Ctrl_rd_Ps3,
-   output logic [4 :0]  Ctrl_func7_Ps3
-   //output t_instType    instTypePs3,
    );
+
+logic [INST_WIDTH-1:0] ir_nxt;
+logic [XLEN-1:0] rs1;
+logic [XLEN-1:0] rs2;
+logic [XLEN-1:0] imm_nxt;
+logic [XLEN-1:0] AluDataIn1_nxt;
+logic [XLEN-1:0] AluDataIn2_nxt;
 
    RegisterFile Reg_file(                 //hazard handled inside reg file   
       .clk             (clk),  
-      .rs0_write       (Ctrl_WriteEn_Ps6),     
-      .rs0_data_in     (Data_rd_Ps6),       
-      .rs0_addr        (Ctrl_rd_Ps6),       
+      .rs0_write       (Ctrl_WriteEn),     
+      .rs0_data_in     (Data_rd),       
+      .rs0_addr        (rd_Ps6),       
       .rs0_addr_error  (), 
-      .rs1_read        (rs1_read),     
+      .rs1_read        (1'b1),     
       .rs1_data_out    (rs1_data_out),        
-      .rs1_addr        (rs1_addr),         
+      .rs1_addr        (rs1),         
       .rs1_addr_error  (),     
-      .rs2_read        (rs2_read),        
+      .rs2_read        (1'b1),        
       .rs2_data_out    (rs2_data_out),        
-      .rs2_addr        (rs2_addr),        
+      .rs2_addr        (rs2),        
       .rs2_addr_error  ()
     );
 
-    // instraction decode
+
+assign AluDataIn1_nxt = rs1_data_out;
+assign AluDataIn2_nxt = ir_nxt[4] ? imm_nxt : rs2_data_out; // bit 4 of ir will be the sel of imm/reg mux
+
+// instraction decode
     always_comb begin
-    	case(InstructionPs2[OPCODE_W:0])
-		e_type_r_instruction    : instTypePs2 = R_TYPE;
-		e_type_i_instruction    : instTypePs2 = I_TYPE;
-		default                 : instTypePs2 = 1'bx; //TODO defult shuld be NOP
-	endcase
+	    if (Instruction[6:0] inside `F_OP)			                          //Integer instruction
+	    begin
+		    ir_nxt[6] = 1'b0;
+		    case({Instruction[30],Instruction[25],Instruction[`FUNC3_BITS],Instruction[OPCODE_W-1:0]})
+			    {1'b0,1'b0,3'b???,MUL_AND_INT} : ir_nxt[`TYPE_BITS] = R1_TYPE;
+			    {1'b1,1'b0,3'b???,MUL_AND_INT} : ir_nxt[`TYPE_BITS] = R2_TYPE;			    
+			    {1'b1,1'b?,3'b101,IMM        } : ir_nxt[`TYPE_BITS] = I1_TYPE;
+			    {1'b?,1'b?,3'b???,IMM        } : ir_nxt[`TYPE_BITS] = I2_TYPE;			    
+		    endcase
 
-	case(instTypePs2)
-		I_TYPE :begin
-		       	  rd_Ps2            = InstructionPs2[11:7];
-			  func3Ps2          = InstructionPs2[14:12];
-		       	  rs1_addr          = InstructionPs2[19:15];
-			  rs1_read          = 1'b1;                 // TODO check if ok
-			  Data_in2          = $signed(InstructionPs2[31:20]);
-			  func7_Ps2         = 0;			  			  
-			end
-		R_TYPE :begin
-		       	  rd_Ps2            = InstructionPs2[11:7];
-			  func3Ps2          = InstructionPs2[14:12];
-		       	  rs1_addr          = InstructionPs2[19:15];
-			  rs1_read          = 1'b1;
-			  rs2_addr          = InstructionPs2[24:20];
-			  rs2_read          = 1'b1;
-			  func7_Ps2         = InstructionPs2[31:25]; //TODO not take all 7 bits			  
-			end
+		    case(ir_nxt[`TYPE_BITS])
+			    R1_TYPE :begin
+				     ir_nxt[`ALU_SEL_BITS] = Instruction[`FUNC3_BITS];
+				     rd                    = Instruction[`RD_BITS   ];
+				     rs1                   = Instruction[`RS1_BITS  ];
+				     rs2                   = Instruction[`RS2_BITS  ]; 
+			             end
+		            R2_TYPE :begin 
+				     ir_nxt[`ALU_SEL_BITS] = Instruction[`FUNC3_BITS];       //practically will always be ADD or SRA
+ 				     rd                    = Instruction[`RD_BITS   ];
+				     rs1                   = Instruction[`RS1_BITS  ];
+				     rs2                   = Instruction[`RS2_BITS  ]; 
+			             end
+		            I1_TYPE :begin
+			             ir_nxt[`ALU_SEL_BITS] = Instruction[`FUNC3_BITS];
+ 				     rd                    = Instruction[`RD_BITS   ];
+				     rs1                   = Instruction[`RS1_BITS  ];
+				     imm_nxt               = $sigend(Instruction[`IMM_BITS  ]); 
+                                     end
+			    I2_TYPE :begin
+			             ir_nxt[`ALU_SEL_BITS] = Instruction[`FUNC3_BITS]; 	     //practically will always be SRA
+				     rd                    = Instruction[`RD_BITS   ];
+				     rs1                   = Instruction[`RS1_BITS  ];
+				     imm_nxt               = $signed(Instruction[`SHAMT_BITS]); 
+                                     end
+		    endcase
 
-		//TODO default
-	endcase
-
-
-
-
-
+	    end else begin //Flot point instruction
+	    	ir_nxt = 7'b1111111;
+	    end
     end
+
+
 
 
 //######## REGISTERS ########################
 
-    //Immediate OR rs2
-    always_ff @(posedge clk or negedge rstn)
-	Data_in2_Ps3 <= Data_in2;
-     
-    //rs1 from reg file 
-    always_ff @(posedge clk or negedge rstn)
-	Data_in1_Ps3 <= rs1_data_out;
+    always_ff @(posedge clk)
+	    ir <= ir_nxt;
 
-    // 
-    always_ff @(posedge clk or negedge rstn)
-	Ctrl_ALU_Ps3 <= func3Ps2;
+    always_ff @(posedge clk)
+	    AluDataIn1 <= AluDataIn1_nxt;
 
-    //Rd 
-    always_ff @(posedge clk or negedge rstn)
-	Ctrl_rd_Ps3 <= rd_Ps2;
+    always_ff @(posedge clk)
+	    AluDataIn2 <= AluDataIn2_nxt;
 
-    always_ff @(posedge clk or negedge rstn)
-	Ctrl_func7_Ps3 <= func7_Ps2;  
 
 endmodule // Decode

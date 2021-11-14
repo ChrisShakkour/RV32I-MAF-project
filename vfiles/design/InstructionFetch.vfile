@@ -1,1 +1,1 @@
--sv ./rtl_src/core/InstructionFetch.sv
+-sv $RTL/core_top/core/InstructionFetch.sv

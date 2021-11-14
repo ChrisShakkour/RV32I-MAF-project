@@ -3,23 +3,26 @@
  
  
  */
-
+`include "../../../packages/defines.sv"
 module WriteBack
+  import instructions_pkg::*;	  
   (
-  <<<<<<< Chris-initial_pipe_bring_up
-     input logic clk,
-     input logic rstn
+     input logic                        clk,
+     input logic                        rstn,
+     input logic  [XLEN-1:0]            AluData,
+     input logic  [MSB_REG_FILE-1:0]    rd,   
+     input logic  [INST_WIDTH-1:0]      ir,
+
+     output logic [XLEN-1:0]            rdData,
+     output logic [MSB_REG_FILE-1:0]    rdOut,
+     output logic                       writeEn
      );
 
+     assign rdData     = AluData;
+     assign writeEn    = 1'b1;
+     assign rdOut      = rd;     
 
-  =======
-     input  logic	       clk,
-     input  logic	       rstn,
-     input  t_xlen       Data_ALUout_Ps6,
+//######### REGISTERS ##############
 
-     output t_xlen       Data_WriteBack_Ps6,
-     );
-
-  assign Data_WriteBack_Ps6 = Data_ALUout_Ps6;
 
 endmodule // WriteBack

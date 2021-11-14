@@ -3,105 +3,85 @@
  
  
  */
-
-
-
-
+`include "../../packages/defines.sv"
 module Core
   (
-   input logic clk,
-   input logic rstn
+   input  logic                 clk,
+   input  logic                 rstn,
+   input  logic                 pc_rstn,    
+   input  logic  [X_LEN-1:0]    FirstInstAdd,
+   
+   output logic  [X_LEN-1:0]    pc
    );
-
-     Decode
-       Decode_Ps1
-         (
-    .clk(clk),
-    .rstn(rstn)
-    );
-
-     InstructionFetch 
-       InstructionFetch_Ps2
-         (
-    .clk   (clk),
-    .rstn  (rstn)
-    );
-  
-     ExecuteOne
-       ExecuteOne_Ps3
-         (
-    .clk   (clk),
-    .rstn  (rstn)
-    );
-
-     ExecuteTwo
-       ExecuteTwo_Ps4
-         (
-    .clk   (clk),
-    .rstn  (rstn)
-    );
-
-     LoadStore
-       LoadStore_Ps5
-  
-     InstructionFetch 
+     
+   InstructionFetch 
        InstructionFetch_Ps1
          (
-    .clk               (clk),
-    .rstn              (rstn),
-          .Pc_ps1_rstn       (Pc_ps1_rstn),  
-          .Pc_ps1            (Pc_ps1) // To ins Mem
-         );
+	 .clk           (clk),
+	 .rstn          (rstn),
+         .pc_rstn       (pc_rstn), 
+         .FirstInstAdd  (FirstInstAdd),
+
+         .pc            (pc)
+    );
 
      Decode
        Decode_Ps2
-         (
-          .clk               (clk),
-          .rstn              (rstn),
-          .InstructionPs2    (InstructionPs2),
-          .Ctrl_rd_Ps6       (Ctrl_rd_Ps6),
-          .Ctrl_WriteEn_Ps   (Ctrl_WriteEn_Ps6),
-          .Data_rd_Ps6       (Data_rd_Ps6),
-          .Data_in2_Ps3      (Data_in2_Ps3),
-          .Data_in1_Ps3      (Data_in1_Ps3),
-          .Ctrl_ALU_Ps3      (Ctrl_ALU_Ps3),
-          .Ctrl_rd_Ps3       (Ctrl_rd_Ps3),
-          .Ctrl_func7_Ps3    (Ctrl_func7_Ps3)
-
-    );
+       (
+	 .clk           (clk),
+	 .rstn          (rstn),
+	 .Instruction   (Instruction),
+	 .rd_Ps6        (rdWb),        //from ps6
+	 .CtrlWriteEn   (EnWb),        //from ps6
+	 .DataRd        (DataWb),      //from ps6
+	 
+	 .AluDataIn1    (AluDataIn1),
+	 .AluDataIn2    (AluDataIn2),
+	 .rd            (rd_Ps3),   
+	 .ir            (ir_Ps3)           
+       );
 
      Execute
        ExecuteOne_Ps3
          (
-          .clk               (clk),
-          .rstn              (rstn),
-          .Date_in2_Ps3      (Date_in2_Ps3),
-          .Data_in1_Ps3      (Data_in1_Ps3),
-          .Ctrl_ALU_Ps3      (Ctrl_ALU_Ps3), //func3 for now
-          .Ctrl_rd_Ps3       (Ctrl_rd_Ps3),
-          .Ctrl_func7_Ps4    (Ctrl_func7_Ps4)   	
+	 .clk           (clk),
+	 .rstn          (rstn),
+         .ir            (ir_Ps3),
+         .AluDataIn1    (AluDataIn1),
+         .AluDataIn2    (AluDataIn2),
+         .rd            (rd_Ps3),   
+                    
+         .AluOut        (AluOut),
+         .rdOut         (rd_Ps5),   
+         .irOut         (ir_Ps5)
     );
 
      LoadStore
        LoadStore_Ps4
        (
-	.clk   (clk),
-	.rstn  (rstn)
+	 .clk           (clk),
+	 .rstn          (rstn),
+   	 .AluData       (AluOut),
+   	 .rd            (rd_Ps5),   
+   	 .ir            (ir_Ps5),
+
+   	 .AluOut        (AluOut_Ps6),
+   	 .rdOut         (rd_Ps6),   
+   	 .irOut         (ir_Ps6)
 	);
 
    WriteBack
-
        WriteBack_Ps6
          (
-    .clk   (clk),
-    .rstn  (rstn)
+	 .clk           (clk),
+	 .rstn          (rstn),
+         .AluData       (AluOut_Ps6),
+         .rd            (rd_Ps6),   
+         .ir            (ir_Ps6),
 
-       WriteBack_Ps5
-         (
-           .clk                (clk),
-           .rstn               (rstn),
-           .Data_ALUout_Ps6    (Data_ALUout_Ps6),
-           .Data_WriteBack_Ps6 (Data_rd_Ps6)
+         .rdData        (DataWb),
+         .rdOut         (rdWb),
+	 .writeEn       (EnWb)
 	);
    
 endmodule // Core
