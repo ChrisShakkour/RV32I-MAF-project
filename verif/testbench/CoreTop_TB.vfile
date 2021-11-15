@@ -1,4 +1,4 @@
 -f ./vfiles/design/CoreTop.vfile
+-f ./vfiles/design/generic_cells.vfile
 
--sv ./verif/testbench/CoreTop_verif_pkg.sv
 -sv ./verif/testbench/CoreTop_TB.sv

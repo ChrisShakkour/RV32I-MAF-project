@@ -1,0 +1,2 @@
+-sv ./HDL/generic_cells/ClockGate.sv
+-sv ./HDL/generic_cells/UpCounter.sv

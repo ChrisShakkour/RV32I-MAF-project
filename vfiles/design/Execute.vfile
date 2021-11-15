@@ -1,1 +1,1 @@
--sv $RTL/core_top/core/Execute.sv
+-sv ./HDL/rtl_src/core_top/core/Execute.sv

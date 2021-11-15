@@ -8,12 +8,15 @@
 `timescale 1ns/1ns
 
 module CoreTop_TB();
-   //import CoreTop_verif_pkg;
+   //import CoreTop_verif_pkg::*;
 
    /* IMAGE set in the sim command */
-   parameter string LOADED_MEM_IMAGE;
-   parameter string STORED_MEM_IMAGE;
-   parameter [memory_pkg::MEM_WORD_WIDTH-1:0] FIRST_FETCH_ADDR;
+   parameter string LOADED_MEM_IMAGE="DEADBEEF";
+   parameter string STORED_MEM_IMAGE="BAD00DAD";
+   parameter FIRST_FETCH_ADDR = 0;
+   parameter IMEM_START_ADDR = 0; 
+   parameter DMEM_START_ADDR = memory_pkg::IMEM_BYTES; 
+
    
    /* safty watchdog timer in cycles*/
    localparam integer WATCHDOG_TIM=1000;
@@ -34,7 +37,7 @@ module CoreTop_TB();
    /* stimuli signals */
    logic clk;
    logic tb_clk_en;
-   logic cg_clk_en
+   logic cg_clk_en;
    logic gated_clk;
    logic rstn;
 
@@ -59,7 +62,7 @@ module CoreTop_TB();
  */////////////////////////////////////////
    
    CoreTop
-     ThaiLung
+     TaiLung
        (
 	.clk  (gated_clk),
 	.rstn ()
@@ -78,15 +81,15 @@ module CoreTop_TB();
    UpCounter
      #(.INCREMENT_RATE(1),
        .WIDTH(WATCHDOG_W)
-       );
+       )
    watchdog_Timer
      (
-      .clk      (watchdog_clk),
-      .rstn     (warchdog_rstn),
-      .en       (watchdog_en),
-      .clear    (watchdog_clear),
-      .overflow (watchdog_expired),
-      count_val (watchdog_counter)
+      .clk       (watchdog_clk),
+      .rstn      (warchdog_rstn),
+      .en        (watchdog_en),
+      .clear     (watchdog_clear),
+      .overflow  (watchdog_expired),
+      .count_val (watchdog_counter)
       );
    
    assign watchdog_clk = clk; 
@@ -124,9 +127,20 @@ module CoreTop_TB();
       rstn=1'b1;
    endtask // reset
 
+
+   task load_instruction_mem;
+      input string mem_file;
+      input string start_addr;
+      //$display("time=%0t[ns]: Loading instruction memory from file: %s\n", $time, m\em_file);
+      //$readmemh(mem_file, TaiLung.Memory_inst.instruction_memory.imem_ram, start_ad\dr);
+   endtask; // load_instruction_mem
+
+
+
+
+
+   
    /* to be built in verif package
-    task load_memory_image
-    task get_memory_image
     task display_instructions
     task display_verbose    
     */
@@ -135,14 +149,16 @@ module CoreTop_TB();
       // print start of test settings
       delay(2); init();
       delay(4); reset();
+      //delay(2); load_data_mem(LOADED_MEM_IMAGE, DMEM_START_ADDR);
+      //delay(2); load_instruction_mem(LOADED_MEM_IMAGE, IMEM_START_ADDR);
       // load static memory
       //
       // stimuli
       //
       /* end of test routine */
-      #(20*PERIOD);
-      
-      $finish
+      delay(20);
+      //delay(2) dump_data_mem(STORED_MEM_IMAGE, DMEM_START_ADDR);
+      $finish;
    end
   
 endmodule // CoreTop_TB

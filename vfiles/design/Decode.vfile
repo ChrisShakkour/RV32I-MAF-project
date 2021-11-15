@@ -1,1 +1,2 @@
+-sv ./temporary/register_file/RegisterFile.sv
 -sv ./HDL/rtl_src/core_top/core/Decode.sv

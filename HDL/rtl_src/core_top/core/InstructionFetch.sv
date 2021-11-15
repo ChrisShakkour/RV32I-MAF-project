@@ -12,12 +12,14 @@ module InstructionFetch
    input  logic                 clk,
    input  logic                 rstn,
    input  logic                 pc_rstn, 
-   input  logic  [X_LEN-1:0]    FirstInstAdd,
+   input  logic  [XLEN-1:0]    FirstInstAdd,
 
-   output logic  [X_LEN-1:0]    pc
+   output logic  [XLEN-1:0]    pc
      );
-
-     assign pc_nxt = pc + 4;
+   
+   logic [XLEN-1:0] 	       pc_next;
+   
+   assign pc_nxt = pc + 4;
 
 //######## REGISTERS ########################
 
