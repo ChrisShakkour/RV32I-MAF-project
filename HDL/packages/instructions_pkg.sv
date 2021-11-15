@@ -6,13 +6,14 @@
  
 */
 
+
 package instructions_pkg;
 
    parameter integer OPCODE_W=7;
    parameter integer FUNCT3_W=3;
    parameter integer FUNCT5_W=5;
    parameter integer FUNCT7_W=7;
-
+   parameter integer INST_WIDTH=8;
 
    /* R-type commands:
     ADD, SUB, SLL, SLT,
@@ -168,34 +169,87 @@ package instructions_pkg;
 
 
 
-   /* immediate funct3 codes */
-   typedef enum logic [FUNCT3_W-1:0]
-   {
-    ADDI  = 3'b000,
-    SLTI  = 3'b010,
-    SLTIU = 3'b011,
-    XORI  = 3'b100,
-    ORI   = 3'b110,
-    ANDI  = 3'b111,
-    SLLI  = 3'b001,
-    SRLAI  = 3'b101    //SRAI + SRLI
-    } e_imm_funct3;
+//   /* immediate funct3 codes */
+//   typedef enum logic [FUNCT3_W-1:0]
+//   {
+//    ADDI  = 3'b000,
+//    SLTI  = 3'b010,
+//    SLTIU = 3'b011,
+//    XORI  = 3'b100,
+//    ORI   = 3'b110,
+//    ANDI  = 3'b111,
+//    SLLI  = 3'b001,
+//    SRLAI  = 3'b101    //SRAI + SRLI
+//    } e_imm_funct3;
 
 
 
    
    // RV32I = 47
    // M = 8
-   // A = 11
-   // F = 26  
-  /* parameter integer N_INSTRUCTIONS=92;
-   localparam integer INST_WIDTH=$clog2(N_INSTRUCTIONS);
-   typedef enum logic [INST_WIDTH-1:0] 
-   {
-   MUL = 2'b00
-    } e_micro_instructions;
-   */
+   // F = 26   
+  
 
+   // R_TYPE
+   // R_TYPE*
+   // I_TYPE
+   // S_TYPE
+   // B_TYPE
+   // U_TYPE
+   // J_TYPE
+   // M_TYPE
+
+   typedef enum logic [2:0]
+   {
+     R1_TYPE = 3'b000,
+     R2_TYPE = 3'b001,	             
+     I1_TYPE = 3'b010,
+     I2_TYPE = 3'b011     
+   } e_inst_type;
+
+   //  [7          ] [6  ] [5 :      3] [2 :   0]
+   //  [Flot or Int] [CSR] [Inst Type*] [ALU sel]
+   //
+   /* instructions code */
+   typedef enum logic [INST_WIDTH-1:0]
+   {
+    INS_ADD    = 8'b00_000_000,    
+    INS_SUB    = 8'b00_001_000, 
+    INS_SLL    = 8'b00_000_001,  
+    INS_SLT    = 8'b00_000_010, 
+    INS_SLTU   = 8'b00_000_011,  
+    INS_XOR    = 8'b00_000_100, 
+    INS_SRL    = 8'b00_000_101, 
+    INS_SRA    = 8'b00_001_101, 
+    INS_OR     = 8'b00_000_110, 
+    INS_AND    = 8'b00_000_111, 
+
+    INS_ADDI   = 8'b00_010_000,
+    INS_SLTI   = 8'b00_010_010,
+    INS_SLTIU  = 8'b00_010_011,
+    INS_XORI   = 8'b00_010_100,
+    INS_ORI    = 8'b00_010_110,
+    INS_ANDI   = 8'b00_010_111,
+    INS_SLLI   = 8'b00_010_001,
+    INS_SRLI   = 8'b00_010_101,
+    INS_SRAI   = 8'b00_011_101    
+    } e_instruction;
+
+typedef enum logic [2:0]
+   {
+    ADD   = 3'b000,    
+    SLL   = 3'b001,  
+    SLT   = 3'b010, 
+    SLTU  = 3'b011,  
+    XOR   = 3'b100, 
+    SRL   = 3'b101, 
+    OR    = 3'b110, 
+    AND   = 3'b111 
+    } e_alu_sel;
+
+
+   parameter XLEN          = 32;    
+   typedef logic [XLEN-1:0] t_xlen;
 
 endpackage // instructions_pkg
    

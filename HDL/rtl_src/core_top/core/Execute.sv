@@ -4,41 +4,48 @@
  
  */
 
-module Execute 
+`include "../../../packages/defines.sv"
+module Execute
+  import instructions_pkg::*;
   (
-   input logic          clk,
-   input logic          rstn,
-   input logic  [11:0]  Date_in2_Ps3,
-   input t_xlen         Data_in1_Ps3,
-   input logic  [2 :0]  Ctrl_ALU_Ps3, //func3 for now
-   input logic  [4 :0]  Ctrl_rd_Ps3,
-   
-   output logic [6 :0]  Ctrl_func7_Ps4,   
-   
+   input logic                       clk,
+   input logic                       rstn,
+   input logic [INST_WIDTH-1:0]      ir,
+   input logic [XLEN-1:0]            AluDataIn1,
+   input logic [XLEN-1:0]            AluDataIn2,
+   input logic [MSB_REG_FILE-1:0]    rd,   
+
+   output logic [XLEN-1:0]           AluOut,
+   output logic [MSB_REG_FILE-1:0]   rdOut,   
+   output logic [INST_WIDTH-1:0]     irOut
+
 );
 
-wire ALU_out;
+logic [XLEN-1:0] AluOut_nxt;
 
 always_comb begin
-
-	case (Ctrl_ALU_Ps3)
-		ADD : ALU_out = (Ctrl_func7_Ps3[5] == 1'b1) ? Data_in1_Ps3 - Date_in2_Ps3 : Data_in1_Ps3 + Date_in2_Ps3;
-		SLT : ALU_out = $signed(Data_in1_Ps3) < $signed(Date_in2_Ps3); 
-		SLTU: ALU_out = Data_in1_Ps3 <   Date_in2_Ps3 ? 32'd1 : 32'b0; 
-		OR  : ALU_out = Data_in1_Ps3 |   Date_in2_Ps3;
-		AND : ALU_out = Data_in1_Ps3 &   Date_in2_Ps3;
-		XOR : ALU_out = Data_in1_Ps3 ^   Date_in2_Ps3;
-		SLL : ALU_out = Data_in1_Ps3 <<  Date_in2_Ps3[4:0];
-		SRL : ALU_out = Data_in1_Ps3 >>  Date_in2_Ps3[4:0];
-		SRA : ALU_out = Data_in1_Ps3 >>> Date_in2_Ps3;
-	endcase // TODO add defult 
+	case (ir[`ALU_SEL_BITS])
+		ADD : AluOut_nxt = (ir[3] == 1'b1) ? AluDataIn1 - AluDataIn2 : AluDataIn1 + AluDataIn2;           // bit 3 of ir will be the mux sel
+		SLT : AluOut_nxt = $signed(AluDataIn1) < $signed(AluDataIn2) ? 32'd1 : 32'b0; 
+		SLTU: AluOut_nxt = AluDataIn1 <    AluDataIn2                ? 32'd1 : 32'b0; 
+		OR  : AluOut_nxt = AluDataIn1 |    AluDataIn2;
+		AND : AluOut_nxt = AluDataIn1 &    AluDataIn2;
+		XOR : AluOut_nxt = AluDataIn1 ^    AluDataIn2;
+		SLL : AluOut_nxt = AluDataIn1 <<   AluDataIn2[4:0];
+		SRL : AluOut_nxt = (ir[3] == 1'b1) ? AluDataIn1 >>  AluDataIn2[4:0] : AluDataIn1 >>> AluDataIn2;
+	endcase 
 end
 
-//######### REGISTERS ##############
+//######### REGISTERS EXE1 ##############
 
 always_ff @(posedge clk)
-	Date_ALU_out_Ps4 <= ALU_out;
+	AluOut <= AluOut_nxt;
 
+always_ff @(posedge clk)
+	rdOut <= rd;
+
+always_ff @(posedge clk)
+	irOut <= ir;
 
 
 endmodule 

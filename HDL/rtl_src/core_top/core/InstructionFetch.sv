@@ -5,32 +5,27 @@
  
  */
 
+`include "../../../packages/defines.sv"
 module InstructionFetch 
+  import instructions_pkg::*;
   (
-   input logic clk,
-  <<<<<<< Chris-initial_pipe_bring_up
-     input logic rstn
+   input  logic                 clk,
+   input  logic                 rstn,
+   input  logic                 pc_rstn, 
+   input  logic  [X_LEN-1:0]    FirstInstAdd,
+
+   output logic  [X_LEN-1:0]    pc
      );
 
-  =======
-     input logic rstn,
-     input logic Pc_ps1_rstn, // program counter reset
+     assign pc_nxt = pc + 4;
 
-     output t_xlen Pc_ps1, // progarm counter
+//######## REGISTERS ########################
 
-     );
-
-     //Program counter
-     always_ff @(posedge clk or negedge (Pc_ps1_rstn & rstn)) 
+     always_ff @(posedge clk or negedge (pc_rstn & rstn)) 
        begin
-         if (!(Pc_ps1_rstn & rstn)))
-           Pc_ps1 <= t_xlen'b0;
+         if (!(pc_rstn & rstn))
+           pc <= FirstInstAdd;
          else
-           Pc_ps1 <= Pc_ps1 + t_xlen'd4;
+           pc <= pc_nxt;
        end
-  >>>>>>> main
-
-
-
-
 endmodule // InstructionFetch
