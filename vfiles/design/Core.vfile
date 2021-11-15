@@ -1,9 +1,9 @@
-$PACKAGES/defines.sv
-$PACKAGES/instructions_pkg.sv
--f $VFILES/design/InstructionFetch.vfile
--f $VFILES/design/Decode.vfile
--f $VFILES/design/Execute.vfile
--f $VFILES/design/LoadStore.vfile
-// -f $VFILES/design/IDMemory.vfile
+-sv ./HDL/packages/instructions_pkg.sv
 
--sv $RTL/core_top/Core.sv
+-f ./vfiles/design/InstructionFetch.vfile
+-f ./vfiles/design/Decode.vfile
+-f ./vfiles/design/Execute.vfile
+-f ./vfiles/design/LoadStore.vfile
+-f ./vfiles/design/WriteBack.vfile
+
+-sv ./HDL/rtl_src/core_top/Core.sv

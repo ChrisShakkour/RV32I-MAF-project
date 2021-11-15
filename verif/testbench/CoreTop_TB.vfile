@@ -1,0 +1,4 @@
+-f ./vfiles/design/CoreTop.vfile
+
+-sv ./verif/testbench/CoreTop_verif_pkg.sv
+-sv ./verif/testbench/CoreTop_TB.sv
