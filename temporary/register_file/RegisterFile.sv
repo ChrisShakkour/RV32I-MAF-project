@@ -69,7 +69,7 @@ module RegisterFile #
      internal_regs[0] <= '0;
    
    always_ff @(posedge clk)
-     if(rs0_write) internal_regs[rs0_addr] <= rs0_data_in;
+     if(rs0_write && rs0_addr!=0) internal_regs[rs0_addr] <= rs0_data_in;
    
    always_ff @(posedge clk)
      if(~rs0_valid_addr & rs0_write) rs0_addr_error <= 1'b1;
