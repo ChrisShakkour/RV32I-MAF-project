@@ -7,12 +7,18 @@
 module Core
   import instructions_pkg::*;
   (
-   input  logic                 clk,
-   input  logic                 rstn,
-   input  logic                 pc_rstn,    
-   input  logic  [XLEN-1:0]    FirstInstAdd,
+   // inputs
+   input logic 		   clk,
+   input logic 		   rstn,
+   input logic 		   pc_rstn, 
+   input logic [XLEN-1:0]  FirstInstAdd,
    
-   output logic  [XLEN-1:0]    pc
+   // outputs
+   output logic [XLEN-1:0] pc,
+			   
+   // mem interface
+   mem_read_only.core_side inst_fetch_port,
+   mem_read_write.core_side load_store_port
    );
      
    InstructionFetch 

@@ -32,22 +32,22 @@
 
 module CoreTop
   #(
-
+    parameter integer ADDR_W=memory_pkg::MEM_ADDR_WIDTH
     )
     (
-     input logic clk,
-     input logic rstn,
+     input logic 	      clk,
+     input logic 	      rstn,
      // fetch signals.
-     input logic first_fetch_addr,
-     input logic first_fetch_en
+     input logic [ADDR_W-1:0] first_fetch_addr,
+     input logic 	      first_fetch_trigger
      // CSR's
-    
      );
    
    // memory inerface 
    mem_read_only inst_fetch_interface();
    mem_read_write load_store_interface();
-   
+
+   //inst_fetch_interface.core_side() inst_fetch_core
    
    Core
      Core_inst
@@ -55,19 +55,18 @@ module CoreTop
 	.clk             (clk),
 	.rstn            (rstn),
 	// memory ports.
-	.inst_fetch_port (inst_fetch_interface.core_side()),
-	.load_store_port (load_store_interface.core_side())
+	.inst_fetch_port (inst_fetch_interface),
+	.load_store_port (load_store_interface)
 	);
    
    /* memory model*/
    Memory 
-     Memeory_inst
+     Memory_inst
        (
 	.clk             (clk),
-	.rstn            (rstn),
 	// memory ports.
-	.inst_fetch_port (inst_fetch_interface.mem_side()),
-	.load_store_port (load_store_interface.mem_side())
+	.inst_fetch_port (inst_fetch_interface),
+	.load_store_port (load_store_interface)
 	);
 
 

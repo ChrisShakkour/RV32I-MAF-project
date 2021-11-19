@@ -29,7 +29,7 @@ module UpCounter
 
    logic [WIDTH:0] 	     next_value;
 
-   assign nxt_value = count_val + INCREMENT_RATE;
+   assign next_value = count_val + INCREMENT_RATE;
 
    always_ff @(posedge clk or negedge rstn)
      if(~rstn)       {overflow, count_val} <= '0;
