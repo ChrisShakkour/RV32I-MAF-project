@@ -13,14 +13,26 @@ module Core
    input logic 		   pc_rstn, 
    input logic [XLEN-1:0]  FirstInstAdd,
    
-   // outputs
-   output logic [XLEN-1:0] pc,
-			   
    // mem interface
    mem_read_only.core_side inst_fetch_port,
    mem_read_write.core_side load_store_port
    );
-     
+
+ logic [MSB_REG_FILE-1:0] rdWb;
+ logic                    EnWb; 
+ logic [XLEN-1:0]         DataWb;
+ logic [XLEN-1:0]         AluDataIn1;
+ logic [XLEN-1:0]         AluDataIn2; 
+ logic [MSB_REG_FILE-1:0] rd_Ps3;
+ logic [INST_WIDTH-1:0]   ir_Ps3;
+ logic [XLEN-1:0]         AluOut; 
+ logic [MSB_REG_FILE-1:0] rd_Ps5;
+ logic [INST_WIDTH-1:0]   ir_Ps5;
+ logic [XLEN-1:0]         AluOut_Ps6; 
+ logic [MSB_REG_FILE-1:0] rd_Ps6;
+ logic [INST_WIDTH-1:0]   ir_Ps6;
+
+
    InstructionFetch 
        InstructionFetch_Ps1
          (
@@ -29,7 +41,7 @@ module Core
          .pc_rstn       (pc_rstn), 
          .FirstInstAdd  (FirstInstAdd),
 
-         .pc            (pc)
+         .pc            (inst_fetch_port.ADDR)
     );
 
      Decode
@@ -37,7 +49,7 @@ module Core
        (
 	 .clk           (clk),
 	 .rstn          (rstn),
-	 .Instruction   (Instruction),
+	 .Instruction   (inst_fetch_port.DATA),
 	 .rd_Ps6        (rdWb),        //from ps6
 	 .CtrlWriteEn   (EnWb),        //from ps6
 	 .DataRd        (DataWb),      //from ps6

@@ -17,7 +17,7 @@ module InstructionFetch
    output logic  [XLEN-1:0]    pc
      );
    
-   logic [XLEN-1:0] 	       pc_next;
+   logic [XLEN-1:0] 	       pc_nxt;
    
    assign pc_nxt = pc + 4;
 

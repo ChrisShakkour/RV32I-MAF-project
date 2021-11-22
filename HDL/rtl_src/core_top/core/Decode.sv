@@ -14,7 +14,7 @@ module Decode
    input logic [XLEN-1:0]            Instruction,
    input logic [MSB_REG_FILE-1:0]    rd_Ps6,
    input logic                       CtrlWriteEn, //from Ps6
-   input logic                       DataRd,      //from Ps6
+   input logic [XLEN-1:0]            DataRd,      //from Ps6
 
    output logic [XLEN-1:0]           AluDataIn1,
    output logic [XLEN-1:0]           AluDataIn2,
@@ -23,17 +23,19 @@ module Decode
 
    );
 
+logic [XLEN-1:0]       rs1_data_out;
+logic [XLEN-1:0]       rs2_data_out;
 logic [INST_WIDTH-1:0] ir_nxt;
-logic [XLEN-1:0] rs1;
-logic [XLEN-1:0] rs2;
-logic [XLEN-1:0] imm_nxt;
-logic [XLEN-1:0] AluDataIn1_nxt;
-logic [XLEN-1:0] AluDataIn2_nxt;
+logic [XLEN-1:0]       rs1;
+logic [XLEN-1:0]       rs2;
+logic [XLEN-1:0]       imm_nxt;
+logic [XLEN-1:0]       AluDataIn1_nxt;
+logic [XLEN-1:0]       AluDataIn2_nxt;
 
    RegisterFile Reg_file(                 //hazard handled inside reg file   
       .clk             (clk),  
-      .rs0_write       (Ctrl_WriteEn),     
-      .rs0_data_in     (Data_rd),       
+      .rs0_write       (CtrlWriteEn),     
+      .rs0_data_in     (DataRd),       
       .rs0_addr        (rd_Ps6),       
       .rs0_addr_error  (), 
       .rs1_read        (1'b1),     
