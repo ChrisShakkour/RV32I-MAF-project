@@ -127,8 +127,8 @@ module CoreTop_TB();
       watchdog_en=1'b0;
       watchdog_clear=1'b0;
       /* CoreTop signals */
-      first_fetch_addr='x;
-      first_fetch_trigger=1'b0;
+      first_fetch_addr='0;
+      first_fetch_trigger=1'b1;
    endtask // init
 
    task reset();

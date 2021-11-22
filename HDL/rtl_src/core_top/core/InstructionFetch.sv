@@ -9,17 +9,22 @@
 module InstructionFetch 
   import instructions_pkg::*;
   (
-   input  logic                 clk,
-   input  logic                 rstn,
-   input  logic                 pc_rstn, 
-   input  logic  [XLEN-1:0]    FirstInstAdd,
+   input logic 		   clk,
+   input logic 		   rstn,
+   input logic 		   pc_rstn, 
+   input logic [XLEN-1:0]  FirstInstAdd,
 
-   output logic  [XLEN-1:0]    pc
+   output logic 	   inst_request,
+   output logic [XLEN-1:0] pc
      );
    
    logic [XLEN-1:0] 	       pc_nxt;
    
    assign pc_nxt = pc + 4;
+   
+   //TODO
+   assign inst_request = 1'b1;
+   
 
 //######## REGISTERS ########################
 
