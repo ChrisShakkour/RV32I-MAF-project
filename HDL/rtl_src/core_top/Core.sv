@@ -40,7 +40,7 @@ module Core
 	 .rstn          (rstn),
          .pc_rstn       (pc_rstn), 
          .FirstInstAdd  (FirstInstAdd),
-
+	 .inst_request  (inst_fetch_port.REQ),
          .pc            (inst_fetch_port.ADDR)
     );
 
