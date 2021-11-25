@@ -21,6 +21,7 @@ comp      = "$OUTPUT/compile"
 vfilePath = "$VFILES/{}/{}.vfile"
 log       = "$OUTPUT/compile/compile_hdl.log"
 cmdArgs   = "$OUTPUT/compile/compile_hdl.args"
+exe       = "$OUTPUT/compile/compile_hdl.exe"
 W         = "[]"
 E         = "[]"
 F         = "[]"
@@ -90,6 +91,8 @@ def main():
     if(args.cmd): print(command)
     else: os.system(command)
 
+    os.system('echo "{}" > {}'.format(command, exe))
+    os.system('chmod u+x {}'.format(exe))
 
     
 if __name__ == "__main__":
