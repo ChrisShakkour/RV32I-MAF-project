@@ -7,7 +7,7 @@ design file: /home/christians/git/RV32I-MAF-project/HDL/rtl_src/core_top/memory/
 
 `timescale 1ns/1ns
 
-module IMem_TB();
+module IMem_TB;
 
    parameter string IMEM_IMAGE;
    parameter integer IMEM_SIZE=memory_pkg::IMEM_BYTES;

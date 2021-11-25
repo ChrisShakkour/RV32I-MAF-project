@@ -7,7 +7,7 @@
 
 `timescale 1ns/1ns
 
-module CoreTop_TB();
+module CoreTop_TB;
    //import CoreTop_verif_pkg::*;
 
    /* IMAGE set in the sim command */
