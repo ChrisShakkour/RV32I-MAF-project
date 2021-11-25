@@ -2,7 +2,7 @@
 
 Designinig a Pipelined in-order 6 stage RISC-V core RV32I-MF
 
-![Screenshot](Tai-Lung-fire-attack.jpg)
+https://github.com/ChrisShakkour/RV32I-MAF-project/blob/main/doc/Tai-Lung-fire-attack.jpg
 
 ## Getting started
 
