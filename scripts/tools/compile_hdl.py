@@ -17,6 +17,7 @@ import sys
 cmd     ="vlog.exe -f {} -outf {} -l {} -work {} -skipsynthoffregion -lint -warning {} -fatal {} -note {} -error {} "
 
 work      = "$OUTPUT/work"
+comp      = "$OUTPUT/compile"
 vfilePath = "$VFILES/{}/{}.vfile"
 log       = "$OUTPUT/compile/compile_hdl.log"
 cmdArgs   = "$OUTPUT/compile/compile_hdl.args"
@@ -25,6 +26,7 @@ E         = "[]"
 F         = "[]"
 N         = "[]"
 defines   = "+define+ SYNTHISIS"
+
 
 '''
 parse user arguments
@@ -44,8 +46,37 @@ def path_exists(src_file):
     if os.path.exists(os.path.realpath(src_file)): return 1
     return 0
 
+
+'''
+check if dir exists
+'''
+def dir_exist(src_dir):
+    if os.path.isdir(src_dir): return 1
+    return 0
+
+
+'''
+create work library
+'''
+def make_vlib():
+    os.system("vlib.exe {}".format(work))
+
+
+'''
+main :)
+'''
 def main():
     args=parse_args();
+    
+    if(not dir_exist(os.path.expandvars('$OUTPUT'))):
+        print("-E- OUTPUT dirictory does not exist, execute >> source source_me.sh")
+        exit(1)
+
+    if(not dir_exist(os.path.expandvars(work))):
+        make_vlib()
+
+    if(not dir_exist(os.path.expandvars(comp))):
+        os.system("mkdir {}".format(comp))
     
     vfile=vfilePath.format("design",args.top)
     if(not path_exists(os.path.expandvars(vfile))):
@@ -58,6 +89,8 @@ def main():
     command=cmd.format(vfile, cmdArgs, log, work, W, E, F, N)
     if(args.cmd): print(command)
     else: os.system(command)
+
+
     
 if __name__ == "__main__":
     main()
