@@ -29,7 +29,11 @@ echo "SCRIPTS = $SCRIPTS"
 export LINKER=$SCRIPTS/linker/linker.ld
 echo "LINKER = $LINKER"
 
-mkdir $GIT_ROOT/OUTPUT
+
+if [ ! -d "$GIT_ROOT/OUTPUT" ]
+then
+    mkdir $GIT_ROOT/OUTPUT
+fi   
 export OUTPUT=$GIT_ROOT/OUTPUT
 echo "OUTPUT = $OUTPUT"
 
