@@ -10,17 +10,20 @@
 module CoreTop_TB;
    //import CoreTop_verif_pkg::*;
 
-   /* IMAGE set in the sim command */
+   //################################
+   /* Paths set in the sim command */
    parameter string LOADED_MEM_IMAGE;
-   parameter string STORED_MEM_IMAGE="BAD0DAD0";
+   parameter string STORED_MEM_IMAGE;
+   //################################
+   
    parameter FIRST_FETCH_ADDR = 0;
    parameter IMEM_START_ADDR = 0; 
-   parameter DMEM_START_ADDR = memory_pkg::IMEM_BYTES; 
+   parameter DMEM_START_ADDR = 2**14; 
    parameter ADDR_W = memory_pkg::MEM_ADDR_WIDTH;  
    
    
    /* safty watchdog timer in cycles*/
-   localparam integer WATCHDOG_TIM=25;
+   localparam integer WATCHDOG_TIM=50;
    localparam integer WATCHDOG_W=$clog2(WATCHDOG_TIM);
    
    /* f=100[MHz], T=10[ns] */
@@ -184,19 +187,19 @@ module CoreTop_TB;
    
    task load_instruction_mem;
       input string mem_file;
-      $display("time=%0t[ns]: Loading instruction memory from file: %s\n", $time, mem_file);
+      $display("-I- time=%0t[ns]: Loading instruction memory from file: %s\n", $time, mem_file);
       $readmemh(mem_file, TaiLung.Memory_inst.instruction_memory.imem_ram, IMEM_START_ADDR);
    endtask // load_instruction_mem
 
    task load_data_mem;
       input string mem_file;
-      $display("time=%0t[ns]: Loading data memory from file: %s\n", $time, mem_file);
+      $display("-I- time=%0t[ns]: Loading data memory from file: %s\n", $time, mem_file);
       $readmemh(mem_file, TaiLung.Memory_inst.data_memory.dmem_ram, DMEM_START_ADDR);
    endtask // load_data_mem
 
    task get_mem_image;
       input string mem_file;
-      $display("time=%0t[ns]: Loading data memory from file: %s\n", $time, mem_file);
+      $display("-I- time=%0t[ns]: Storing data memory to file: %s\n", $time, mem_file);
       $writememh(mem_file, TaiLung.Memory_inst.data_memory.dmem_ram, DMEM_START_ADDR);
    endtask // get_mem_image
 
@@ -244,6 +247,7 @@ module CoreTop_TB;
       //delay(2) dump_data_mem(STORED_MEM_IMAGE, DMEM_START_ADDR);
       delay(LONG__STEP); close_core_clock();
       delay(SHORT_STEP); stop_watchdog();
+      delay(SHORT_STEP); get_mem_image(STORED_MEM_IMAGE);
       delay(SHORT_STEP); close_main_clock();
       delay(LONG__STEP); $finish;
    end
