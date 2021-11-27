@@ -5,11 +5,12 @@
 -T              linker
 -nostartfiles   ?
 -o              output
+--dessembler-options=no_aliases
 
 Ex. flow
 riscv32-unknown-elf-gcc -S test.c -march=rv32i -mabi=ilp32
 riscv32-unknown-elf-gcc -c test.s -march=rv32i -mabi=ilp32 -T $LINKER -o test.elf
-riscv32-unknown-elf-objdump -gd test.elf > test.txt
+riscv32-unknown-elf-objdump -gd test.elf > test.txt -Mno-aliases
 riscv32-unknown-elf-objcopy --srec-len 1 --output-target=verilog test.elf test.sv
 '''
 
@@ -19,8 +20,9 @@ import sys
 
 
 c_2_asm   = 'riscv32-unknown-elf-gcc -S {} -ffreestanding -march={} -mabi={} -o {}'     
-asm_2_elf = 'riscv32-unknown-elf-gcc -O3 -nostartfiles -D__riscv_ {} -march={} -mabi={} -T {} -o {}'  
+asm_2_elf = 'riscv32-unknown-elf-gcc -O3 -nostartfiles -D__riscv_ $CRT0 {} -march={} -mabi={} -T {} -o {}'  
 elf_2_txt = 'riscv32-unknown-elf-objdump -gd {} > {}'
+elf_2_txt_mono = elf_2_txt+" -Mno-aliases -M numeric"
 elf_2_mem = 'riscv32-unknown-elf-objcopy --srec-len 1 --output-target=verilog {} {}' 
 
 
@@ -145,6 +147,17 @@ def gen_txt(elf_file, dest):
     os.system(cmd)
     return 0
 
+'''
+run text mono
+generation command
+'''
+def gen_txt_mono(elf_file, dest):
+    print('generating Mono text file...')
+    cmd=elf_2_txt_mono.format(elf_file, dest)
+    print('command : %s' %(cmd))
+    os.system(cmd)
+    return 0
+
 
 '''
 run generate memory
@@ -183,6 +196,7 @@ def main():
         gen_elf(dest_realpath+'.s', args.arch, args.abi, '{}'.format(os.getenv('LINKER')), dest_realpath+'.elf')
     if args.txt is not None:
         gen_txt(dest_realpath+'.elf', dest_realpath+'.txt')
+        gen_txt_mono(dest_realpath+'.elf', dest_realpath+'.txt.mono')
     if args.mem is not None:
         gen_mem(dest_realpath+'.elf', dest_realpath+'.mem')
         
