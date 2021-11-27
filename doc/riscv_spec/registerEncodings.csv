@@ -1,0 +1,36 @@
+
+Register Name, ABI Name, Description
+x0           , zero    , Hard-Wired Zero
+x1           , ra      , Return Address
+x2           , sp      , Stack Pointer
+x3           , gp      , Global Pointer
+x4           , tp      , Tread Pointer
+x5           , t0      , Temporary/Alternate Link Register
+x6           , t1      , Temporary Register
+x7           , t2      , Temporary Register
+x8           , s0/fp   , Saved Register (Frame Pointer)
+x0           , s1      , Saved Register
+x10          , a0      , Fumction Argument/Return Value Register
+x11          , a1      , Fumction Argument/Return Value Register
+x12          , a2      , Fumction Argument Register
+x13          , a3      , Fumction Argument Register
+x14          , a4      , Fumction Argument Register
+x15          , a5      , Fumction Argument Register
+x16          , a6      , Fumction Argument Register
+x17          , a7      , Fumction Argument Register
+x18          , s2      , Saved Register
+x19          , s3      , Saved Register
+x20          , s4      , Saved Register
+x21          , s5      , Saved Register
+x22          , s6      , Saved Register
+x23          , s7      , Saved Register
+x24          , s8      , Saved Register
+x25          , s9      , Saved Register
+x26          , s10     , Saved Register
+x27          , s11     , Saved Register
+x28          , t3      , Temporary Register
+x29          , t4      , Temporary Register
+x30          , t5      , Temporary Register
+x31          , t6      , Temporary Register
+
+
