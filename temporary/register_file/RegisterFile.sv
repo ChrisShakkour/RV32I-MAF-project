@@ -57,13 +57,19 @@ module RegisterFile #
    	  	       &&(rs1_read)
 		       &&(rs0_write));
 
-   always_ff @(posedge clk)
-     if(rs1_valid_addr & rs1_forward)   rs1_data_out <= rs0_data_in;
-     else if(rs1_valid_addr & rs1_read) rs1_data_out <= internal_regs[rs1_addr];
- 
-   always_ff @(posedge clk)
-     if(rs2_valid_addr & rs2_forward)   rs2_data_out = rs0_data_in;
-     else if(rs2_valid_addr & rs2_read) rs2_data_out <= internal_regs[rs2_addr];
+     always_comb begin
+     if(rs1_addr == 5'b0)
+     rs1_data_out = internal_regs[rs1_addr];
+     else if(rs1_valid_addr & rs1_forward)   rs1_data_out = rs0_data_in;
+     else if(rs1_valid_addr & rs1_read) rs1_data_out = internal_regs[rs1_addr];
+     end
+
+     always_comb begin
+     if(rs2_addr == 5'b0)
+     rs2_data_out = internal_regs[rs2_addr];
+     else if(rs2_valid_addr & rs2_forward)   rs2_data_out = rs0_data_in;
+     else if(rs2_valid_addr & rs2_read) rs2_data_out = internal_regs[rs2_addr];
+     end
    
    always_ff @(posedge clk)
      internal_regs[0] <= '0;
