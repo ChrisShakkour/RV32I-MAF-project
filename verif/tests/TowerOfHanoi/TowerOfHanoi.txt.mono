@@ -1,0 +1,134 @@
+
+/home/christians/git/RV32I-MAF-project/verif/tests/TowerOfHanoi/TowerOfHanoi.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start-0x1c>:
+   0:	01c0006f          	jal	x0,1c <_start>
+   4:	0440006f          	jal	x0,48 <reset_handler>
+   8:	0c40006f          	jal	x0,cc <call_main_handler>
+   c:	0d00006f          	jal	x0,dc <end_of_main_handler>
+  10:	00000013          	addi	x0,x0,0
+  14:	00000013          	addi	x0,x0,0
+  18:	0cc0006f          	jal	x0,e4 <idle_handler>
+
+0000001c <_start>:
+  1c:	00000013          	addi	x0,x0,0
+  20:	00000013          	addi	x0,x0,0
+  24:	00000013          	addi	x0,x0,0
+  28:	00000013          	addi	x0,x0,0
+  2c:	00000013          	addi	x0,x0,0
+  30:	00000013          	addi	x0,x0,0
+  34:	00000013          	addi	x0,x0,0
+  38:	00000013          	addi	x0,x0,0
+  3c:	00000013          	addi	x0,x0,0
+  40:	00000013          	addi	x0,x0,0
+  44:	0040006f          	jal	x0,48 <reset_handler>
+
+00000048 <reset_handler>:
+  48:	00000093          	addi	x1,x0,0
+  4c:	00008113          	addi	x2,x1,0
+  50:	00008193          	addi	x3,x1,0
+  54:	00008213          	addi	x4,x1,0
+  58:	00008293          	addi	x5,x1,0
+  5c:	00008313          	addi	x6,x1,0
+  60:	00008393          	addi	x7,x1,0
+  64:	00008413          	addi	x8,x1,0
+  68:	00008493          	addi	x9,x1,0
+  6c:	00008513          	addi	x10,x1,0
+  70:	00008593          	addi	x11,x1,0
+  74:	00008613          	addi	x12,x1,0
+  78:	00008693          	addi	x13,x1,0
+  7c:	00008713          	addi	x14,x1,0
+  80:	00008793          	addi	x15,x1,0
+  84:	00008813          	addi	x16,x1,0
+  88:	00008893          	addi	x17,x1,0
+  8c:	00008913          	addi	x18,x1,0
+  90:	00008993          	addi	x19,x1,0
+  94:	00008a13          	addi	x20,x1,0
+  98:	00008a93          	addi	x21,x1,0
+  9c:	00008b13          	addi	x22,x1,0
+  a0:	00008b93          	addi	x23,x1,0
+  a4:	00008c13          	addi	x24,x1,0
+  a8:	00008c93          	addi	x25,x1,0
+  ac:	00008d13          	addi	x26,x1,0
+  b0:	00008d93          	addi	x27,x1,0
+  b4:	00008e13          	addi	x28,x1,0
+  b8:	00008e93          	addi	x29,x1,0
+  bc:	00008f13          	addi	x30,x1,0
+  c0:	00008f93          	addi	x31,x1,0
+  c4:	00004137          	lui	x2,0x4
+  c8:	0040006f          	jal	x0,cc <call_main_handler>
+
+000000cc <call_main_handler>:
+  cc:	00000513          	addi	x10,x0,0
+  d0:	00000593          	addi	x11,x0,0
+  d4:	0ac000ef          	jal	x1,180 <main>
+  d8:	0040006f          	jal	x0,dc <end_of_main_handler>
+
+000000dc <end_of_main_handler>:
+  dc:	00050413          	addi	x8,x10,0
+  e0:	0040006f          	jal	x0,e4 <idle_handler>
+
+000000e4 <idle_handler>:
+  e4:	00000013          	addi	x0,x0,0
+  e8:	ffdff06f          	jal	x0,e4 <idle_handler>
+
+000000ec <towerOfHanoi>:
+  ec:	fe010113          	addi	x2,x2,-32 # 3fe0 <main+0x3e60>
+  f0:	00112e23          	sw	x1,28(x2)
+  f4:	00812c23          	sw	x8,24(x2)
+  f8:	02010413          	addi	x8,x2,32
+  fc:	fea42623          	sw	x10,-20(x8)
+ 100:	00058793          	addi	x15,x11,0
+ 104:	00068713          	addi	x14,x13,0
+ 108:	fef405a3          	sb	x15,-21(x8)
+ 10c:	00060793          	addi	x15,x12,0
+ 110:	fef40523          	sb	x15,-22(x8)
+ 114:	00070793          	addi	x15,x14,0
+ 118:	fef404a3          	sb	x15,-23(x8)
+ 11c:	fec42703          	lw	x14,-20(x8)
+ 120:	00100793          	addi	x15,x0,1
+ 124:	04f70463          	beq	x14,x15,16c <towerOfHanoi+0x80>
+ 128:	fec42783          	lw	x15,-20(x8)
+ 12c:	fff78793          	addi	x15,x15,-1
+ 130:	fea44683          	lbu	x13,-22(x8)
+ 134:	fe944603          	lbu	x12,-23(x8)
+ 138:	feb44703          	lbu	x14,-21(x8)
+ 13c:	00070593          	addi	x11,x14,0
+ 140:	00078513          	addi	x10,x15,0
+ 144:	fa9ff0ef          	jal	x1,ec <towerOfHanoi>
+ 148:	fec42783          	lw	x15,-20(x8)
+ 14c:	fff78793          	addi	x15,x15,-1
+ 150:	feb44683          	lbu	x13,-21(x8)
+ 154:	fea44603          	lbu	x12,-22(x8)
+ 158:	fe944703          	lbu	x14,-23(x8)
+ 15c:	00070593          	addi	x11,x14,0
+ 160:	00078513          	addi	x10,x15,0
+ 164:	f89ff0ef          	jal	x1,ec <towerOfHanoi>
+ 168:	0080006f          	jal	x0,170 <towerOfHanoi+0x84>
+ 16c:	00000013          	addi	x0,x0,0
+ 170:	01c12083          	lw	x1,28(x2)
+ 174:	01812403          	lw	x8,24(x2)
+ 178:	02010113          	addi	x2,x2,32
+ 17c:	00008067          	jalr	x0,0(x1)
+
+00000180 <main>:
+ 180:	fe010113          	addi	x2,x2,-32
+ 184:	00112e23          	sw	x1,28(x2)
+ 188:	00812c23          	sw	x8,24(x2)
+ 18c:	02010413          	addi	x8,x2,32
+ 190:	00400793          	addi	x15,x0,4
+ 194:	fef42623          	sw	x15,-20(x8)
+ 198:	04200693          	addi	x13,x0,66
+ 19c:	04300613          	addi	x12,x0,67
+ 1a0:	04100593          	addi	x11,x0,65
+ 1a4:	fec42503          	lw	x10,-20(x8)
+ 1a8:	f45ff0ef          	jal	x1,ec <towerOfHanoi>
+ 1ac:	00000793          	addi	x15,x0,0
+ 1b0:	00078513          	addi	x10,x15,0
+ 1b4:	01c12083          	lw	x1,28(x2)
+ 1b8:	01812403          	lw	x8,24(x2)
+ 1bc:	02010113          	addi	x2,x2,32
+ 1c0:	00008067          	jalr	x0,0(x1)

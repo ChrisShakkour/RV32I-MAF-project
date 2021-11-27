@@ -29,6 +29,9 @@ echo "SCRIPTS = $SCRIPTS"
 export LINKER=$SCRIPTS/linker/linker.ld
 echo "LINKER = $LINKER"
 
+export CRT0=$SCRIPTS/crt0/crt0.S
+echo "CRT0 = $CRT0"
+
 
 if [ ! -d "$GIT_ROOT/OUTPUT" ]
 then
