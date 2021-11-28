@@ -23,17 +23,16 @@ module RegisterFile_TB ();
    logic               rs0_write;
    logic [R_WIDTH-1:0] rs0_data_in;
    logic [W_ADDR-1:0]  rs0_addr;
-   logic               rs0_addr_error;   
    // Port 1 Read only:
    logic               rs1_read;
    logic [R_WIDTH-1:0] rs1_data_out;
    logic [W_ADDR-1:0]  rs1_addr;
-   logic 	       rs1_addr_error;
+   logic 	       rs1_forward;
    // Port 2 Read only:
    logic 	       rs2_read;
    logic [R_WIDTH-1:0] rs2_data_out;
    logic [W_ADDR-1:0]  rs2_addr;
-   logic 	       rs2_addr_error;
+   logic 	       rs2_forward;
 
    
    RegisterFile #
@@ -46,17 +45,16 @@ module RegisterFile_TB ();
       .rs0_write      (rs0_write),
       .rs0_data_in    (rs0_data_in),
       .rs0_addr       (rs0_addr),
-      .rs0_addr_error (rs0_addr_error),
       // Port 1 Read only:
       .rs1_read       (rs1_read),
       .rs1_data_out   (rs1_data_out),
       .rs1_addr       (rs1_addr),
-      .rs1_addr_error (rs1_addr_error),
+      .rs1_forward    (rs1_forward),
       // Port 2 Read only:
       .rs2_read       (rs2_read),
       .rs2_data_out   (rs2_data_out),
       .rs2_addr       (rs2_addr),
-      .rs2_addr_error (rs2_addr_error)
+      .rs2_forward    (rs2_forward)
       );
 
    always #(HALF_CLK) clk = (clk_en) ? ~clk : clk;
@@ -75,9 +73,11 @@ module RegisterFile_TB ();
       
       rs1_read=0;
       rs1_addr='0;
-      
+      rs1_forward='1;
+            
       rs2_read=0;
       rs2_addr='0;
+      rs2_forward='1;
    endtask
 
    task read_port1;
