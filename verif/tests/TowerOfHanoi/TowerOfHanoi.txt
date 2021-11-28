@@ -4,18 +4,20 @@
 
 Disassembly of section .text:
 
-00000000 <_start-0x1c>:
-   0:	01c0006f          	j	1c <_start>
-   4:	0440006f          	j	48 <reset_handler>
-   8:	0c40006f          	j	cc <call_main_handler>
-   c:	0d00006f          	j	dc <end_of_main_handler>
+00000000 <idle_handler-0x1c>:
+   0:	0240006f          	j	24 <_start>
+   4:	04c0006f          	j	50 <reset_handler>
+   8:	0cc0006f          	j	d4 <call_main_handler>
+   c:	0d80006f          	j	e4 <end_of_main_handler>
   10:	00000013          	nop
   14:	00000013          	nop
-  18:	0cc0006f          	j	e4 <idle_handler>
+  18:	0040006f          	j	1c <idle_handler>
 
-0000001c <_start>:
+0000001c <idle_handler>:
   1c:	00000013          	nop
-  20:	00000013          	nop
+  20:	ffdff06f          	j	1c <idle_handler>
+
+00000024 <_start>:
   24:	00000013          	nop
   28:	00000013          	nop
   2c:	00000013          	nop
@@ -24,56 +26,54 @@ Disassembly of section .text:
   38:	00000013          	nop
   3c:	00000013          	nop
   40:	00000013          	nop
-  44:	0040006f          	j	48 <reset_handler>
+  44:	00000013          	nop
+  48:	00000013          	nop
+  4c:	0040006f          	j	50 <reset_handler>
 
-00000048 <reset_handler>:
-  48:	00000093          	li	ra,0
-  4c:	00008113          	mv	sp,ra
-  50:	00008193          	mv	gp,ra
-  54:	00008213          	mv	tp,ra
-  58:	00008293          	mv	t0,ra
-  5c:	00008313          	mv	t1,ra
-  60:	00008393          	mv	t2,ra
-  64:	00008413          	mv	s0,ra
-  68:	00008493          	mv	s1,ra
-  6c:	00008513          	mv	a0,ra
-  70:	00008593          	mv	a1,ra
-  74:	00008613          	mv	a2,ra
-  78:	00008693          	mv	a3,ra
-  7c:	00008713          	mv	a4,ra
-  80:	00008793          	mv	a5,ra
-  84:	00008813          	mv	a6,ra
-  88:	00008893          	mv	a7,ra
-  8c:	00008913          	mv	s2,ra
-  90:	00008993          	mv	s3,ra
-  94:	00008a13          	mv	s4,ra
-  98:	00008a93          	mv	s5,ra
-  9c:	00008b13          	mv	s6,ra
-  a0:	00008b93          	mv	s7,ra
-  a4:	00008c13          	mv	s8,ra
-  a8:	00008c93          	mv	s9,ra
-  ac:	00008d13          	mv	s10,ra
-  b0:	00008d93          	mv	s11,ra
-  b4:	00008e13          	mv	t3,ra
-  b8:	00008e93          	mv	t4,ra
-  bc:	00008f13          	mv	t5,ra
-  c0:	00008f93          	mv	t6,ra
-  c4:	00004137          	lui	sp,0x4
-  c8:	0040006f          	j	cc <call_main_handler>
+00000050 <reset_handler>:
+  50:	00000093          	li	ra,0
+  54:	00008113          	mv	sp,ra
+  58:	00008193          	mv	gp,ra
+  5c:	00008213          	mv	tp,ra
+  60:	00008293          	mv	t0,ra
+  64:	00008313          	mv	t1,ra
+  68:	00008393          	mv	t2,ra
+  6c:	00008413          	mv	s0,ra
+  70:	00008493          	mv	s1,ra
+  74:	00008513          	mv	a0,ra
+  78:	00008593          	mv	a1,ra
+  7c:	00008613          	mv	a2,ra
+  80:	00008693          	mv	a3,ra
+  84:	00008713          	mv	a4,ra
+  88:	00008793          	mv	a5,ra
+  8c:	00008813          	mv	a6,ra
+  90:	00008893          	mv	a7,ra
+  94:	00008913          	mv	s2,ra
+  98:	00008993          	mv	s3,ra
+  9c:	00008a13          	mv	s4,ra
+  a0:	00008a93          	mv	s5,ra
+  a4:	00008b13          	mv	s6,ra
+  a8:	00008b93          	mv	s7,ra
+  ac:	00008c13          	mv	s8,ra
+  b0:	00008c93          	mv	s9,ra
+  b4:	00008d13          	mv	s10,ra
+  b8:	00008d93          	mv	s11,ra
+  bc:	00008e13          	mv	t3,ra
+  c0:	00008e93          	mv	t4,ra
+  c4:	00008f13          	mv	t5,ra
+  c8:	00008f93          	mv	t6,ra
+  cc:	00004137          	lui	sp,0x4
+  d0:	0040006f          	j	d4 <call_main_handler>
 
-000000cc <call_main_handler>:
-  cc:	00000513          	li	a0,0
-  d0:	00000593          	li	a1,0
-  d4:	0ac000ef          	jal	ra,180 <main>
-  d8:	0040006f          	j	dc <end_of_main_handler>
+000000d4 <call_main_handler>:
+  d4:	00000513          	li	a0,0
+  d8:	00000593          	li	a1,0
+  dc:	0a4000ef          	jal	ra,180 <main>
+  e0:	0040006f          	j	e4 <end_of_main_handler>
 
-000000dc <end_of_main_handler>:
-  dc:	00050413          	mv	s0,a0
-  e0:	0040006f          	j	e4 <idle_handler>
-
-000000e4 <idle_handler>:
-  e4:	00000013          	nop
-  e8:	ffdff06f          	j	e4 <idle_handler>
+000000e4 <end_of_main_handler>:
+  e4:	00050413          	mv	s0,a0
+  e8:	f35ff06f          	j	1c <idle_handler>
 
 000000ec <towerOfHanoi>:
   ec:	fe010113          	addi	sp,sp,-32 # 3fe0 <main+0x3e60>

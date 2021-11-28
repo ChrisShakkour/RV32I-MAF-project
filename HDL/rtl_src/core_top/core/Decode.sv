@@ -32,20 +32,21 @@ logic [XLEN-1:0]       imm_nxt;
 logic [XLEN-1:0]       AluDataIn1_nxt;
 logic [XLEN-1:0]       AluDataIn2_nxt;
 
+   // TODO forwarding is disabled 1'b1
+   // to be added accordingly
    RegisterFile Reg_file(                 //hazard handled inside reg file   
       .clk             (clk),  
       .rs0_write       (CtrlWriteEn),     
       .rs0_data_in     (DataRd),       
       .rs0_addr        (rd_Ps6),       
-      .rs0_addr_error  (), 
       .rs1_read        (1'b1),     
       .rs1_data_out    (rs1_data_out),        
       .rs1_addr        (rs1),         
-      .rs1_addr_error  (),     
+      .rs1_forward     (1'b0),     
       .rs2_read        (1'b1),        
       .rs2_data_out    (rs2_data_out),        
       .rs2_addr        (rs2),        
-      .rs2_addr_error  ()
+      .rs2_forward     (1'b0)
     );
 
 

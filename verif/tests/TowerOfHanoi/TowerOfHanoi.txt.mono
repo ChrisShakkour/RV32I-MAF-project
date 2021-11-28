@@ -4,18 +4,20 @@
 
 Disassembly of section .text:
 
-00000000 <_start-0x1c>:
-   0:	01c0006f          	jal	x0,1c <_start>
-   4:	0440006f          	jal	x0,48 <reset_handler>
-   8:	0c40006f          	jal	x0,cc <call_main_handler>
-   c:	0d00006f          	jal	x0,dc <end_of_main_handler>
+00000000 <idle_handler-0x1c>:
+   0:	0240006f          	jal	x0,24 <_start>
+   4:	04c0006f          	jal	x0,50 <reset_handler>
+   8:	0cc0006f          	jal	x0,d4 <call_main_handler>
+   c:	0d80006f          	jal	x0,e4 <end_of_main_handler>
   10:	00000013          	addi	x0,x0,0
   14:	00000013          	addi	x0,x0,0
-  18:	0cc0006f          	jal	x0,e4 <idle_handler>
+  18:	0040006f          	jal	x0,1c <idle_handler>
 
-0000001c <_start>:
+0000001c <idle_handler>:
   1c:	00000013          	addi	x0,x0,0
-  20:	00000013          	addi	x0,x0,0
+  20:	ffdff06f          	jal	x0,1c <idle_handler>
+
+00000024 <_start>:
   24:	00000013          	addi	x0,x0,0
   28:	00000013          	addi	x0,x0,0
   2c:	00000013          	addi	x0,x0,0
@@ -24,56 +26,54 @@ Disassembly of section .text:
   38:	00000013          	addi	x0,x0,0
   3c:	00000013          	addi	x0,x0,0
   40:	00000013          	addi	x0,x0,0
-  44:	0040006f          	jal	x0,48 <reset_handler>
+  44:	00000013          	addi	x0,x0,0
+  48:	00000013          	addi	x0,x0,0
+  4c:	0040006f          	jal	x0,50 <reset_handler>
 
-00000048 <reset_handler>:
-  48:	00000093          	addi	x1,x0,0
-  4c:	00008113          	addi	x2,x1,0
-  50:	00008193          	addi	x3,x1,0
-  54:	00008213          	addi	x4,x1,0
-  58:	00008293          	addi	x5,x1,0
-  5c:	00008313          	addi	x6,x1,0
-  60:	00008393          	addi	x7,x1,0
-  64:	00008413          	addi	x8,x1,0
-  68:	00008493          	addi	x9,x1,0
-  6c:	00008513          	addi	x10,x1,0
-  70:	00008593          	addi	x11,x1,0
-  74:	00008613          	addi	x12,x1,0
-  78:	00008693          	addi	x13,x1,0
-  7c:	00008713          	addi	x14,x1,0
-  80:	00008793          	addi	x15,x1,0
-  84:	00008813          	addi	x16,x1,0
-  88:	00008893          	addi	x17,x1,0
-  8c:	00008913          	addi	x18,x1,0
-  90:	00008993          	addi	x19,x1,0
-  94:	00008a13          	addi	x20,x1,0
-  98:	00008a93          	addi	x21,x1,0
-  9c:	00008b13          	addi	x22,x1,0
-  a0:	00008b93          	addi	x23,x1,0
-  a4:	00008c13          	addi	x24,x1,0
-  a8:	00008c93          	addi	x25,x1,0
-  ac:	00008d13          	addi	x26,x1,0
-  b0:	00008d93          	addi	x27,x1,0
-  b4:	00008e13          	addi	x28,x1,0
-  b8:	00008e93          	addi	x29,x1,0
-  bc:	00008f13          	addi	x30,x1,0
-  c0:	00008f93          	addi	x31,x1,0
-  c4:	00004137          	lui	x2,0x4
-  c8:	0040006f          	jal	x0,cc <call_main_handler>
+00000050 <reset_handler>:
+  50:	00000093          	addi	x1,x0,0
+  54:	00008113          	addi	x2,x1,0
+  58:	00008193          	addi	x3,x1,0
+  5c:	00008213          	addi	x4,x1,0
+  60:	00008293          	addi	x5,x1,0
+  64:	00008313          	addi	x6,x1,0
+  68:	00008393          	addi	x7,x1,0
+  6c:	00008413          	addi	x8,x1,0
+  70:	00008493          	addi	x9,x1,0
+  74:	00008513          	addi	x10,x1,0
+  78:	00008593          	addi	x11,x1,0
+  7c:	00008613          	addi	x12,x1,0
+  80:	00008693          	addi	x13,x1,0
+  84:	00008713          	addi	x14,x1,0
+  88:	00008793          	addi	x15,x1,0
+  8c:	00008813          	addi	x16,x1,0
+  90:	00008893          	addi	x17,x1,0
+  94:	00008913          	addi	x18,x1,0
+  98:	00008993          	addi	x19,x1,0
+  9c:	00008a13          	addi	x20,x1,0
+  a0:	00008a93          	addi	x21,x1,0
+  a4:	00008b13          	addi	x22,x1,0
+  a8:	00008b93          	addi	x23,x1,0
+  ac:	00008c13          	addi	x24,x1,0
+  b0:	00008c93          	addi	x25,x1,0
+  b4:	00008d13          	addi	x26,x1,0
+  b8:	00008d93          	addi	x27,x1,0
+  bc:	00008e13          	addi	x28,x1,0
+  c0:	00008e93          	addi	x29,x1,0
+  c4:	00008f13          	addi	x30,x1,0
+  c8:	00008f93          	addi	x31,x1,0
+  cc:	00004137          	lui	x2,0x4
+  d0:	0040006f          	jal	x0,d4 <call_main_handler>
 
-000000cc <call_main_handler>:
-  cc:	00000513          	addi	x10,x0,0
-  d0:	00000593          	addi	x11,x0,0
-  d4:	0ac000ef          	jal	x1,180 <main>
-  d8:	0040006f          	jal	x0,dc <end_of_main_handler>
+000000d4 <call_main_handler>:
+  d4:	00000513          	addi	x10,x0,0
+  d8:	00000593          	addi	x11,x0,0
+  dc:	0a4000ef          	jal	x1,180 <main>
+  e0:	0040006f          	jal	x0,e4 <end_of_main_handler>
 
-000000dc <end_of_main_handler>:
-  dc:	00050413          	addi	x8,x10,0
-  e0:	0040006f          	jal	x0,e4 <idle_handler>
-
-000000e4 <idle_handler>:
-  e4:	00000013          	addi	x0,x0,0
-  e8:	ffdff06f          	jal	x0,e4 <idle_handler>
+000000e4 <end_of_main_handler>:
+  e4:	00050413          	addi	x8,x10,0
+  e8:	f35ff06f          	jal	x0,1c <idle_handler>
 
 000000ec <towerOfHanoi>:
   ec:	fe010113          	addi	x2,x2,-32 # 3fe0 <main+0x3e60>
