@@ -43,7 +43,14 @@ nop
 .org 0x18
 jal x0, idle_handler
 
+// stuck at, indicator
+// of end of execution.
+idle_handler:
+	.org 0x1C
+	nop
+	jal x0, idle_handler
 
+	
 //.......................................
 /* handler functions                   */	
 //.......................................	
@@ -118,12 +125,6 @@ end_of_main_handler:
 	mv s0, a0
 	jal x0, idle_handler
 	
-
-// stuck at, indicator
-// of end of execution.
-idle_handler:
-	nop
-	jal x0, idle_handler
 	
 		
 
