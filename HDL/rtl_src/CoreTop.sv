@@ -54,8 +54,6 @@ module CoreTop
        (
 	.clk             (clk),
 	.rstn            (rstn),
-	.FirstInstAdd    (first_fetch_addr),
-	.pc_rstn         (first_fetch_trigger),
 	// memory ports.
 	.inst_fetch_port (inst_fetch_interface),
 	.load_store_port (load_store_interface)
