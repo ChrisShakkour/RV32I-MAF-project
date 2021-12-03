@@ -14,7 +14,7 @@ import os
 import sys
 
 
-cmd     ="vlog.exe -f {} -outf {} -l {} -work {} -skipsynthoffregion -lint -warning {} -fatal {} -note {} -error {} "
+cmd     ="vlog.exe -f {} -outf {} -l {} -work {} -skipsynthoffregion -lint -source -warning {} -fatal {} -note {} -error {} "
 
 work      = "$OUTPUT/work"
 comp      = "$OUTPUT/compile"
