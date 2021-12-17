@@ -1,1 +1,5 @@
+-sv ./HDL/packages/instructions_pkg.sv	
+-sv ./HDL/packages/control_pkg.sv
+-sv ./HDL/packages/memory_pkg.sv
+
 -sv ./HDL/rtl_src/core_top/core/WriteBack.sv
