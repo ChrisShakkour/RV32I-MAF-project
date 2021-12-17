@@ -14,7 +14,7 @@ import os
 import sys
 
 
-cmd     ="vlog.exe -f {} -outf {} -l {} -work {} -skipsynthoffregion -lint -source -warning {} -fatal {} -note {} -error {} "
+cmd     ="vlog.exe -f {} -outf {} -l {} -work {} -skipsynthoffregion -lint -source -warning {} -fatal {} -note {} -error {} -suppress {}"
 
 work      = "$OUTPUT/work"
 comp      = "$OUTPUT/compile"
@@ -26,6 +26,7 @@ W         = "[]"
 E         = "[]"
 F         = "[]"
 N         = "[]"
+S         = "2275"
 defines   = "+define+ SYNTHISIS"
 
 
@@ -87,7 +88,7 @@ def main():
        print('-E- {} file does not exist'.format(vfile))
        exit(1)
        
-    command=cmd.format(vfile, cmdArgs, log, work, W, E, F, N)
+    command=cmd.format(vfile, cmdArgs, log, work, W, E, F, N, S)
     if(args.cmd): print(command)
     else: os.system(command)
 
