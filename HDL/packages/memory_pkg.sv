@@ -44,17 +44,17 @@ package memory_pkg;
    // driven by the following 
    // byte codes.
    parameter LS_SINGLE=2'b01;    //LoadStore_Single byte, LB, LBU, SB
-   parameter LS_HALFWORD=2'b10;   //LoadStore Halfword,    LH, LHU, SH
-   parameter LS_WORD=2'b1x;      //LoadStore Word,        LW, SW
+   parameter LS_HALFWORD=2'b10;  //LoadStore Halfword,    LH, LHU, SH
+   parameter LS_WORD=2'b00;      //LoadStore Word,        LW, SW
    parameter L_UNSIGNED=1'b1;    //Load Unsigned,         LBU, LHU
    
 		       
    typedef enum logic [1:0]
    {
     WORD     = 2'b00,
-    SINGLE   = 2'b01,
-    HALFWORD = 2'b10
-    } e_num_bytes;
+    HALFWORD = 2'b10,
+    BYTE     = 2'b01
+    } e_mem_num_bytes;
    
 
    

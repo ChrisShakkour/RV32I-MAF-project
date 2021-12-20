@@ -9,25 +9,22 @@
 
 package instructions_pkg;
 
+   parameter integer INST_W=32;
+   parameter integer ADDR_W=$clog2(INST_W);
+   
    parameter integer OPCODE_W=7;
    parameter integer FUNCT3_W=3;
    parameter integer FUNCT5_W=5;
    parameter integer FUNCT7_W=7;
-   parameter MSB_REG_FILE = 5;   
+   
+   parameter integer MSB_REG_FILE = 5;   
+   parameter integer XLEN         = 32;    
+   typedef logic [XLEN-1:0] t_xlen;
 
 
-   typedef enum logic [3:0] {
-    ADD  = 4'b0000 ,
-    SUB  = 4'b1000 ,
-    SLT  = 4'b0010 ,
-    SLTU = 4'b0011 ,
-    SLL  = 4'b0001 , 
-    SRL  = 4'b0101 ,
-    SRA  = 4'b1101 ,
-    XOR  = 4'b0100 ,
-    OR   = 4'b0110 ,
-    AND  = 4'b0111
-   } e_alu_sel ;
+   parameter integer NOP_CNT_WIDTH = 3;
+   parameter         NOP = 'h00000013;
+   
 
    /* R-type commands:
     ADD, SUB, SLL, SLT,
@@ -115,21 +112,35 @@ package instructions_pkg;
     } t_type_opcode;
    
 
-  /* I&R funct3 codes */
-  typedef enum logic [FUNCT3_W-1:0]
-  {
-   F3_ADD   = 3'b000,
-   F3_SLT   = 3'b010,
-   F3_SLTU  = 3'b011,
-   F3_XOR   = 3'b100,
-   F3_OR    = 3'b110,
-   F3_AND   = 3'b111,
-   F3_SLL   = 3'b001,
-   F3_SRLA  = 3'b101    //SRAI + SRLI
-   } e_imm_funct3;
+   /* I&R funct3 codes */
+   typedef enum  logic [FUNCT3_W-1:0]
+   {
+    ADD_SUB = 3'b000, //SUB if funct7[5] is high
+    SLL     = 3'b001,
+    SLT     = 3'b010,
+    SLTU    = 3'b011,
+    XOR     = 3'b100,
+    SRL_SRA = 3'b101, //SRA if funct7[5] is high
+    OR      = 3'b110,
+    AND     = 3'b111
+    } e_r2r_funct3;
+ 
+   
+   /* I&R funct3 codes */
+   typedef enum  logic [FUNCT3_W-1:0]
+    {
+     ADDI      = 3'b000,
+     SLTI      = 3'b010,
+     SLTIU     = 3'b011,
+     XORI      = 3'b100,
+     ORI       = 3'b110,
+     ANDI      = 3'b111,
+     SLLI      = 3'b001,
+     SRLI_SRAI = 3'b101 //SRAI if funct7[5] is high
+     } e_imm_funct3;
 
    /* M-extension funct3 codes */
-   typedef enum logic [FUNCT3_W-1:0]
+   typedef enum  logic [FUNCT3_W-1:0]
    {
     MUL    = 3'b000,
     MULH   = 3'b001,
@@ -142,7 +153,14 @@ package instructions_pkg;
     } e_mult_funct3;
    
 
-
+   /* MUL_AND_INT funct 7 codes */
+   typedef enum  logic [FUNCT7_W-1:0]
+   {
+    R_NORMAL    = 7'b0000000,
+    R_SPECIALS  = 7'b0100000,
+    M_EXTENSION = 7'b0000001
+    } e_rtype_funct7;    
+   
    /* A-extension funct5 codes */
    typedef enum logic [FUNCT5_W-1:0]
    {
@@ -160,7 +178,6 @@ package instructions_pkg;
     } e_atomic_funct5;
   
 
-
    /* branch funct3 codes */
    typedef enum logic [FUNCT3_W-1:0]
    {
@@ -171,14 +188,6 @@ package instructions_pkg;
     BLTU = 3'b110,
     BGEU = 3'b111
     } e_branch_funct3;
-
-   /* mem size funct3 codes */
-   typedef enum logic [FUNCT3_W-1:0]
-   {
-    WORD      = 3'b010,
-    HALFWORD  = 3'b001,
-    BYTE      = 3'b000
-    } e_mem_size_funct3;    
 
 
    /* load funct3 codes */
@@ -199,23 +208,7 @@ package instructions_pkg;
     SH  = 3'b001,
     SW  = 3'b010
     } e_store_funct3;
-
    
-// typedef enum logic [2:0]
-//    {
-//     ADD   = 3'b000,    
-//     SLL   = 3'b001,  
-//     SLT   = 3'b010, 
-//     SLTU  = 3'b011,  
-//     XOR   = 3'b100, 
-//     SRL   = 3'b101, 
-//     OR    = 3'b110, 
-//     AND   = 3'b111 
-//     } e_alu_sel;
-
-
-   parameter XLEN          = 32;    
-   typedef logic [XLEN-1:0] t_xlen;
-
+      
 endpackage // instructions_pkg
    

@@ -1,4 +1,6 @@
 -sv ./HDL/packages/instructions_pkg.sv
+-sv ./HDL/packages/memory_pkg.sv
+-sv ./HDL/packages/control_pkg.sv
 
 -f ./vfiles/design/InstructionFetch.vfile
 -f ./vfiles/design/Decode.vfile
