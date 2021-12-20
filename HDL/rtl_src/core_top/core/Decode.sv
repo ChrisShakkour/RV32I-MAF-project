@@ -382,7 +382,7 @@ module Decode
 	JALR: begin
 	   if(funct3 == 3'b000) begin
 	      nop_set                  = 1'b1;
-	      nop_count                = 3;
+	      nop_count                = 4;
 	      ctrl_wb_to_rf_sel_nxt    = WB_PC_PLS4;
 	      sel_next_pc              = 1'b1;
 	      ctrl_reg_wr_nxt          = 1'b1;
@@ -442,7 +442,7 @@ module Decode
 	/*updates pc to pc + (sign extended immediate)*/
 	JAL: begin
 	   nop_set               = 1'b1;
-	   nop_count             = 3;   
+	   nop_count             = 4;   
 	   sel_next_pc           = 1'b1;
 	   ctrl_reg_wr_nxt       = 1'b1;
 	   ctrl_wb_to_rf_sel_nxt = WB_PC_PLS4;

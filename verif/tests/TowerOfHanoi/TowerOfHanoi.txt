@@ -7,8 +7,8 @@ Disassembly of section .text:
 00000000 <idle_handler-0x1c>:
        0:	0240006f          	j	24 <_start>
        4:	04c0006f          	j	50 <reset_handler>
-       8:	0cc0006f          	j	d4 <call_main_handler>
-       c:	0d80006f          	j	e4 <end_of_main_handler>
+       8:	0d00006f          	j	d8 <call_main_handler>
+       c:	0dc0006f          	j	e8 <end_of_main_handler>
       10:	00000013          	nop
       14:	00000013          	nop
       18:	0040006f          	j	1c <idle_handler>
@@ -62,74 +62,75 @@ Disassembly of section .text:
       c0:	00000e93          	li	t4,0
       c4:	00000f13          	li	t5,0
       c8:	00000f93          	li	t6,0
-      cc:	00004137          	lui	sp,0x4
-      d0:	0040006f          	j	d4 <call_main_handler>
+      cc:	00010137          	lui	sp,0x10
+      d0:	fff10113          	addi	sp,sp,-1 # ffff <main+0xfe7b>
+      d4:	0040006f          	j	d8 <call_main_handler>
 
-000000d4 <call_main_handler>:
-      d4:	00000513          	li	a0,0
-      d8:	00000593          	li	a1,0
-      dc:	0a4000ef          	jal	ra,180 <main>
-      e0:	0040006f          	j	e4 <end_of_main_handler>
+000000d8 <call_main_handler>:
+      d8:	00000513          	li	a0,0
+      dc:	00000593          	li	a1,0
+      e0:	0a4000ef          	jal	ra,184 <main>
+      e4:	0040006f          	j	e8 <end_of_main_handler>
 
-000000e4 <end_of_main_handler>:
-      e4:	00050413          	mv	s0,a0
-      e8:	f35ff06f          	j	1c <idle_handler>
+000000e8 <end_of_main_handler>:
+      e8:	00050413          	mv	s0,a0
+      ec:	f31ff06f          	j	1c <idle_handler>
 
-000000ec <towerOfHanoi>:
-      ec:	fe010113          	addi	sp,sp,-32 # 3fe0 <main+0x3e60>
-      f0:	00112e23          	sw	ra,28(sp)
-      f4:	00812c23          	sw	s0,24(sp)
-      f8:	02010413          	addi	s0,sp,32
-      fc:	fea42623          	sw	a0,-20(s0)
-     100:	00058793          	mv	a5,a1
-     104:	00068713          	mv	a4,a3
-     108:	fef405a3          	sb	a5,-21(s0)
-     10c:	00060793          	mv	a5,a2
-     110:	fef40523          	sb	a5,-22(s0)
-     114:	00070793          	mv	a5,a4
-     118:	fef404a3          	sb	a5,-23(s0)
-     11c:	fec42703          	lw	a4,-20(s0)
-     120:	00100793          	li	a5,1
-     124:	04f70463          	beq	a4,a5,16c <towerOfHanoi+0x80>
-     128:	fec42783          	lw	a5,-20(s0)
-     12c:	fff78793          	addi	a5,a5,-1
-     130:	fea44683          	lbu	a3,-22(s0)
-     134:	fe944603          	lbu	a2,-23(s0)
-     138:	feb44703          	lbu	a4,-21(s0)
-     13c:	00070593          	mv	a1,a4
-     140:	00078513          	mv	a0,a5
-     144:	fa9ff0ef          	jal	ra,ec <towerOfHanoi>
-     148:	fec42783          	lw	a5,-20(s0)
-     14c:	fff78793          	addi	a5,a5,-1
-     150:	feb44683          	lbu	a3,-21(s0)
-     154:	fea44603          	lbu	a2,-22(s0)
-     158:	fe944703          	lbu	a4,-23(s0)
-     15c:	00070593          	mv	a1,a4
-     160:	00078513          	mv	a0,a5
-     164:	f89ff0ef          	jal	ra,ec <towerOfHanoi>
-     168:	0080006f          	j	170 <towerOfHanoi+0x84>
-     16c:	00000013          	nop
-     170:	01c12083          	lw	ra,28(sp)
-     174:	01812403          	lw	s0,24(sp)
-     178:	02010113          	addi	sp,sp,32
-     17c:	00008067          	ret
+000000f0 <towerOfHanoi>:
+      f0:	fe010113          	addi	sp,sp,-32
+      f4:	00112e23          	sw	ra,28(sp)
+      f8:	00812c23          	sw	s0,24(sp)
+      fc:	02010413          	addi	s0,sp,32
+     100:	fea42623          	sw	a0,-20(s0)
+     104:	00058793          	mv	a5,a1
+     108:	00068713          	mv	a4,a3
+     10c:	fef405a3          	sb	a5,-21(s0)
+     110:	00060793          	mv	a5,a2
+     114:	fef40523          	sb	a5,-22(s0)
+     118:	00070793          	mv	a5,a4
+     11c:	fef404a3          	sb	a5,-23(s0)
+     120:	fec42703          	lw	a4,-20(s0)
+     124:	00100793          	li	a5,1
+     128:	04f70463          	beq	a4,a5,170 <towerOfHanoi+0x80>
+     12c:	fec42783          	lw	a5,-20(s0)
+     130:	fff78793          	addi	a5,a5,-1
+     134:	fea44683          	lbu	a3,-22(s0)
+     138:	fe944603          	lbu	a2,-23(s0)
+     13c:	feb44703          	lbu	a4,-21(s0)
+     140:	00070593          	mv	a1,a4
+     144:	00078513          	mv	a0,a5
+     148:	fa9ff0ef          	jal	ra,f0 <towerOfHanoi>
+     14c:	fec42783          	lw	a5,-20(s0)
+     150:	fff78793          	addi	a5,a5,-1
+     154:	feb44683          	lbu	a3,-21(s0)
+     158:	fea44603          	lbu	a2,-22(s0)
+     15c:	fe944703          	lbu	a4,-23(s0)
+     160:	00070593          	mv	a1,a4
+     164:	00078513          	mv	a0,a5
+     168:	f89ff0ef          	jal	ra,f0 <towerOfHanoi>
+     16c:	0080006f          	j	174 <towerOfHanoi+0x84>
+     170:	00000013          	nop
+     174:	01c12083          	lw	ra,28(sp)
+     178:	01812403          	lw	s0,24(sp)
+     17c:	02010113          	addi	sp,sp,32
+     180:	00008067          	ret
 
-00000180 <main>:
-     180:	fe010113          	addi	sp,sp,-32
-     184:	00112e23          	sw	ra,28(sp)
-     188:	00812c23          	sw	s0,24(sp)
-     18c:	02010413          	addi	s0,sp,32
-     190:	00400793          	li	a5,4
-     194:	fef42623          	sw	a5,-20(s0)
-     198:	04200693          	li	a3,66
-     19c:	04300613          	li	a2,67
-     1a0:	04100593          	li	a1,65
-     1a4:	fec42503          	lw	a0,-20(s0)
-     1a8:	f45ff0ef          	jal	ra,ec <towerOfHanoi>
-     1ac:	00000793          	li	a5,0
-     1b0:	00078513          	mv	a0,a5
-     1b4:	01c12083          	lw	ra,28(sp)
-     1b8:	01812403          	lw	s0,24(sp)
-     1bc:	02010113          	addi	sp,sp,32
-     1c0:	00008067          	ret
+00000184 <main>:
+     184:	fe010113          	addi	sp,sp,-32
+     188:	00112e23          	sw	ra,28(sp)
+     18c:	00812c23          	sw	s0,24(sp)
+     190:	02010413          	addi	s0,sp,32
+     194:	00400793          	li	a5,4
+     198:	fef42623          	sw	a5,-20(s0)
+     19c:	04200693          	li	a3,66
+     1a0:	04300613          	li	a2,67
+     1a4:	04100593          	li	a1,65
+     1a8:	fec42503          	lw	a0,-20(s0)
+     1ac:	f45ff0ef          	jal	ra,f0 <towerOfHanoi>
+     1b0:	00000793          	li	a5,0
+     1b4:	00078513          	mv	a0,a5
+     1b8:	01c12083          	lw	ra,28(sp)
+     1bc:	01812403          	lw	s0,24(sp)
+     1c0:	02010113          	addi	sp,sp,32
+     1c4:	00008067          	ret
 	...

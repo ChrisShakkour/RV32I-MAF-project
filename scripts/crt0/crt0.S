@@ -103,7 +103,7 @@ reset_handler:
 	mv x30, x0
 	mv x31, x0
 	/* stack initilization */
-	la   x2, 0x4000
+	la   x2, 0xFFFF
 	jal x0, call_main_handler
 
 
