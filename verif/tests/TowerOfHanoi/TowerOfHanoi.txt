@@ -63,7 +63,7 @@ Disassembly of section .text:
       c4:	00000f13          	li	t5,0
       c8:	00000f93          	li	t6,0
       cc:	00010137          	lui	sp,0x10
-      d0:	fff10113          	addi	sp,sp,-1 # ffff <main+0xfe7b>
+      d0:	fe010113          	addi	sp,sp,-32 # ffe0 <main+0xfe5c>
       d4:	0040006f          	j	d8 <call_main_handler>
 
 000000d8 <call_main_handler>:

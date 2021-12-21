@@ -23,7 +23,7 @@ module CoreTop_TB;
    
    
    /* safty watchdog timer in cycles*/
-   localparam integer WATCHDOG_TIM=50;
+   localparam integer WATCHDOG_TIM=200;
    localparam integer WATCHDOG_W=$clog2(WATCHDOG_TIM);
    
    /* f=100[MHz], T=10[ns] */
@@ -75,7 +75,6 @@ module CoreTop_TB;
        (
 	.clk                 (gated_clk),
 	.rstn                (rstn),
-	.first_fetch_addr    (first_fetch_addr),
 	.first_fetch_trigger (first_fetch_trigger)
 	);
 
@@ -130,10 +129,16 @@ module CoreTop_TB;
       watchdog_en=1'b0;
       watchdog_clear=1'b0;
       /* CoreTop signals */
-      first_fetch_addr='0;
-      first_fetch_trigger=1'b1;
+      first_fetch_trigger=1'b0;
    endtask // init
 
+   task cpu_go();
+      first_fetch_trigger=1'b1;
+      delay(1);
+      first_fetch_trigger=1'b0;
+   endtask // cpu_go
+   
+   
    task reset();
       rstn=1'b0;
       delay(LONG__STEP);
@@ -233,6 +238,8 @@ module CoreTop_TB;
       delay(SHORT_STEP); load_instruction_mem(LOADED_MEM_IMAGE);
       delay(SHORT_STEP); load_data_mem(LOADED_MEM_IMAGE);
       delay(LONG__STEP); open_core_clock();
+      delay(LONG__STEP); cpu_go();
+      
       
       delay(10); clear_watchdog(); 
       delay(10); clear_watchdog(); 
@@ -243,7 +250,7 @@ module CoreTop_TB;
       // stimuli
       //
       /* end of test routine */
-      delay(40);
+      delay(200);
       //delay(2) dump_data_mem(STORED_MEM_IMAGE, DMEM_START_ADDR);
       delay(LONG__STEP); close_core_clock();
       delay(SHORT_STEP); stop_watchdog();
