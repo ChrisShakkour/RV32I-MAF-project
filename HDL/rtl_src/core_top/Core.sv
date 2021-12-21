@@ -14,8 +14,10 @@ module Core
    import memory_pkg::*;
   (
    // inputs
-   input logic 		   clk,
-   input logic 		   rstn,   
+   input logic clk,
+   input logic rstn,
+   
+   input logic first_fetch_trigger,
    // mem interface
    mem_read_only.core_side inst_fetch_port,
    mem_read_write.core_side load_store_port
@@ -107,6 +109,10 @@ module Core
        (
 	.clk           (clk),
 	.rstn          (rstn),
+	
+	// cpu GO signal.
+	.pc_stall(1'b0),
+	.first_fetch_trigger(first_fetch_trigger),
 	
 	// going to instruction memory
 	.inst_request  (inst_request),
