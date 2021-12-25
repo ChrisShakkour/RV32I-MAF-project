@@ -1,4 +1,5 @@
 -f ./vfiles/design/CoreTop.vfile
 -f ./vfiles/design/generic_cells.vfile
 
+-sv ./verif/trackers/inst_pipe.sv
 -sv ./verif/testbench/CoreTop_TB.sv

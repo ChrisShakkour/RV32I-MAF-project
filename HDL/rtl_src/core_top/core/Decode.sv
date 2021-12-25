@@ -67,7 +67,10 @@ module Decode
     
     output logic 		    sel_next_pc_out,
     output logic 		    ctrl_lui_inst,
-    output logic 		    ctrl_reg_wr   
+    output logic 		    ctrl_reg_wr,
+    // output for data hazard control
+    output logic [MSB_REG_FILE-1:0] rs1_addr,
+    output logic [MSB_REG_FILE-1:0] rs2_addr
     );
 
 
@@ -82,8 +85,8 @@ module Decode
    logic [MSB_REG_FILE-1:0] 	    rd_addr_nxt;
    logic [XLEN-1:0] 		    immediate_nxt; 
 
-   logic [MSB_REG_FILE-1:0] 	    rs1_addr;
-   logic [MSB_REG_FILE-1:0] 	    rs2_addr;
+   //logic [MSB_REG_FILE-1:0] 	    rs1_addr; //Moved to interface for data hazard control
+   //logic [MSB_REG_FILE-1:0] 	    rs2_addr; //Moved to interface for data hazard control
    
    // alu  control control
    e_alu_operation_sel              ctrl_alu_op_sel_nxt;

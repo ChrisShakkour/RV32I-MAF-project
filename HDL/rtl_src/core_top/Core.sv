@@ -47,12 +47,17 @@ module Core
    
    logic [XLEN-1:0] 	    rs2_data_ps3;
    logic [XLEN-1:0] 	    rs1_data_ps3;
+   logic [XLEN-1:0] 	    aluin_1_post;
+   logic [XLEN-1:0] 	    aluin_2_post;
    
    logic                    ctrl_mem_wr_ps5;
    logic                    ctrl_reg_wr_ps5;
    logic [1:0] 		    ctrl_mem_size_ps5;
    logic [XLEN-1:0] 	    rs2_data_ps5;
    logic                    ctrl_reg_wr_ps6;
+
+   logic [MSB_REG_FILE-1:0] rs1_addr;
+   logic [MSB_REG_FILE-1:0] rs2_addr;
 
    ///////////////////////////////
    /*data memory control signals*/
@@ -92,7 +97,6 @@ module Core
    logic [XLEN-1:0] 	   inst_req_addr;
    logic 		   inst_addr_error;
    logic [XLEN-1:0] 	   instruction;   
-
    
    		    
 /*//////////////////////////////////////////////
@@ -178,7 +182,10 @@ module Core
 	.ctrl_dmem_req        (dec_ctrl_dmem_req),
 	.ctrl_dmem_write      (dec_ctrl_dmem_write),   
 	.ctrl_dmem_l_unsigned (dec_ctrl_dmem_l_unsigned),
-	.ctrl_dmem_n_bytes    (dec_ctrl_dmem_n_bytes)
+	.ctrl_dmem_n_bytes    (dec_ctrl_dmem_n_bytes),
+
+	.rs1_addr  (rs1_addr),
+	.rs2_addr  (rs2_addr)
 	);
 
    // instruction comming from memory
@@ -209,8 +216,8 @@ module Core
 	// comming from decode stage
 	.pc                   (pc_ps3),   	
 	.pc_pls4              (pc_pls4_ps3),
-	.rs1_data             (rs1_data_ps3),
-	.rs2_data             (rs2_data_ps3),
+	.rs1_data             (aluin_1_post),
+	.rs2_data             (aluin_2_post),
 	.rd_addr              (rd_addr_ps3),   
 	.immediate            (immediate),
 	// alu control select
@@ -313,4 +320,26 @@ module Core
 
 	);
    
+
+
+	Forwarding_unit
+	  i_forwarding_unit
+	  (
+	     .clk	          (clk),
+             .rs1_addr            (rs1_addr),
+             .rs2_addr            (rs2_addr ),
+             .rd_Ps5              (rd_Ps5),
+             .rs2_data_ps3        (rs2_data_ps3),
+             .rs1_data_ps3        (rs1_data_ps3),
+             .AluOut              (AluOut),
+             .rd_Ps6              (rd_Ps6),
+             .DataWb              (DataWb),
+                                                   
+             .aluin_1_post        (aluin_1_post),
+             .aluin_2_post        (aluin_2_post)
+	  );
+
+
+
+	
 endmodule // Core

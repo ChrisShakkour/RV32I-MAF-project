@@ -68,7 +68,7 @@ module DMem
      addr_err <= (req & ~valid_addr);
 
    // load - little endianess
-   always_ff @(posedge clk)
+   always_comb
      if(req & valid_read) begin
 	unique case(n_bytes)
 	  LS_SINGLE:

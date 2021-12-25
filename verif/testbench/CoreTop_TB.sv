@@ -9,7 +9,6 @@
 
 module CoreTop_TB;
    //import CoreTop_verif_pkg::*;
-
    //################################
    /* Paths set in the sim command */
    parameter string LOADED_MEM_IMAGE;
@@ -106,6 +105,13 @@ module CoreTop_TB;
 
    always @(posedge clk iff (rstn))
      if(watchdog_expired) $stop;
+
+
+   //###############
+   /* PIPE TRACKER*/
+   //###############
+   inst_pipe_tracker i_inst_pipe_tracker(.clk(clk));
+
    
 /*////////////////////////////
    _____           _       
@@ -213,9 +219,6 @@ module CoreTop_TB;
    /* DISPLAY TASKS */
    //#################
 
-   
-
-   
    /* to be built in verif package
     task display_instructions
     task display_verbose    

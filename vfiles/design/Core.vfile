@@ -9,3 +9,4 @@
 -f ./vfiles/design/WriteBack.vfile
 
 -sv ./HDL/rtl_src/core_top/Core.sv
+-sv ./HDL/rtl_src/core_top/core/forwarding_unit.sv 
