@@ -1,4 +1,5 @@
 -sv ./HDL/packages/instructions_pkg.sv
 -sv ./HDL/packages/control_pkg.sv
 
+-f ./vfiles/design/BranchComparator.vfile
 -sv ./HDL/rtl_src/core_top/core/Execute.sv

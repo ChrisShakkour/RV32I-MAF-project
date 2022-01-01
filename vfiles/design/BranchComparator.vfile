@@ -1,0 +1,4 @@
+-sv ./HDL/packages/instructions_pkg.sv
+-sv ./HDL/packages/control_pkg.sv
+
+-sv ./HDL/rtl_src/core_top/core/execute/BranchComparator.sv

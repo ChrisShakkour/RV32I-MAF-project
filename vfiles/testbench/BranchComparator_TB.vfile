@@ -1,0 +1,3 @@
+-f ./vfiles/design/BranchComparator.vfile
+
+-sv ./verif/rtl_sim/BranchComparator_TB.sv
