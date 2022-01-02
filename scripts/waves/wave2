@@ -12,7 +12,7 @@ add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Core_inst/rdWb
 add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Core_inst/EnWb
 add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Core_inst/DataWb
 add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Core_inst/AluOut
-add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData
+add wave -noupdate -radix hexadecimal -childformat {{{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[31]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[30]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[29]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[28]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[27]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[26]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[25]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[24]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[23]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[22]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[21]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[20]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[19]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[18]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[17]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[16]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[15]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[14]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[13]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[12]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[11]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[10]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[9]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[8]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[7]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[6]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[5]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[4]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[3]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[2]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[1]} -radix hexadecimal} {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[0]} -radix hexadecimal}} -expand -subitemconfig {{/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[31]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[30]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[29]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[28]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[27]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[26]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[25]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[24]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[23]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[22]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[21]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[20]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[19]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[18]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[17]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[16]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[15]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[14]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[13]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[12]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[11]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[10]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[9]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[8]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[7]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[6]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[5]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[4]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[3]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[2]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[1]} {-radix hexadecimal} {/CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData[0]} {-radix hexadecimal}} /CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/AluData
 add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/pc_pls4
 add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Core_inst/WriteBack_Ps6/dmem_load_data
 add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Memory_inst/data_memory/clk
@@ -43,14 +43,49 @@ add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Core_inst/InstructionF
 add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Core_inst/InstructionFetch_inst/pc_stall
 add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Core_inst/InstructionFetch_inst/fetch_enable
 add wave -noupdate -radix hexadecimal /CoreTop_TB/TaiLung/Core_inst/InstructionFetch_inst/pc_enable
-add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/BranchComparator_inst/enable
-add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/BranchComparator_inst/operation
-add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/BranchComparator_inst/result_masked
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/clk
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/rstn
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_alu_op_sel
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_alu_a_sel
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_alu_b_sel
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_wb_to_rf_sel_in
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_wb_to_rf_sel
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/set_alu_lsb_bit_zero
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/pc
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/pc_pls4
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/rs1_data
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/rs2_data
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/rd_addr
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/immediate
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_reg_wr
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_dmem_req_in
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_dmem_write_in
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_dmem_l_unsigned_in
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_dmem_n_bytes_in
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_dmem_req
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_dmem_write
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_dmem_l_unsigned
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_dmem_n_bytes
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/AluOut
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/rdOut
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/pc_pls4_out
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_reg_wr_out
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/rs2_data_out
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/branch_enable
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/branch_operation
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/branch_result_masked
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_jump_request_in
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/ctrl_jump_request
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/branch_result_masked_pre
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/AluOut_nxt
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/AluOut_nxt_lsb_set
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/AluDataIn1
+add wave -noupdate /CoreTop_TB/TaiLung/Core_inst/ExecuteOne_Ps3/AluDataIn2
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1400 ns} 0}
+WaveRestoreCursors {{Cursor 1} {573 ns} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 570
-configure wave -valuecolwidth 220
+configure wave -namecolwidth 416
+configure wave -valuecolwidth 208
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
 configure wave -snapdistance 10
@@ -63,4 +98,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ns} {1920 ns}
+WaveRestoreZoom {537 ns} {615 ns}
