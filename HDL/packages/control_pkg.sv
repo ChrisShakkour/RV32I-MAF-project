@@ -8,7 +8,10 @@ package control_pkg;
    // ALU operations number
    parameter integer ALU_OP_N = 10;
    parameter integer ALU_OP_W = $clog2(ALU_OP_N);
-
+   
+   //parameter integer BRANCH_TAKEN = 1'b1;
+   //parameter integer BRANCH_NOT_TAKEN = 1'b0;
+   
    
    /* ALU select operation options*/
    typedef enum logic [ALU_OP_W-1:0]
@@ -53,7 +56,28 @@ package control_pkg;
     } e_regfile_wb_sel;
    
 
+   /*branch operation select
+    for branch compare unit*/
+   typedef enum logic [2:0]
+   {
+    CMP_BEQ  = 3'b000,
+    CMP_BNE  = 3'b001,
+    CMP_BLT  = 3'b100,
+    CMP_BGE  = 3'b101,
+    CMP_BLTU = 3'b110,
+    CMP_BGEU = 3'b111
+    } e_branch_operation_sel;
+   
 
+   /*branch result*/
+   typedef enum logic [0:0]
+   {
+    BRANCH_NOT_TAKEN = 1'b0,
+    BRANCH_TAKEN     = 1'b1
+    } e_branch_result;
+   
+   
+   
 		
    
 endpackage // control_pkg

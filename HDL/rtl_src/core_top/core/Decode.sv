@@ -20,54 +20,61 @@ module Decode
    import memory_pkg::*;
    import control_pkg::*;
    (
-    input logic 		    clk,
-    input logic 		    rstn,
+    input logic 		     clk,
+    input logic 		     rstn,
     
     // comming from inst fetch
-    input logic [XLEN-1:0] 	    instruction_in,
-    input logic [XLEN-1:0] 	    pc_in,
-    input logic [XLEN-1:0] 	    pc_pls4_in,
+    input logic [XLEN-1:0] 	     instruction_in,
+    input logic [XLEN-1:0] 	     pc_in,
+    input logic [XLEN-1:0] 	     pc_pls4_in,
     
     //###########################################
     //### DATA signals
     //###########################################
     // pc out to exe stage
-    output logic [XLEN-1:0] 	    pc,
-    output logic [XLEN-1:0] 	    pc_pls4, 
+    output logic [XLEN-1:0] 	     pc,
+    output logic [XLEN-1:0] 	     pc_pls4, 
+
+    output logic 		     ctrl_pc_stall_set,
+    output logic [NOP_CNT_WIDTH-1:0] ctrl_pc_stall_count,
+
     // going to exe stage.
-    output logic [XLEN-1:0] 	    rs1_data,
-    output logic [XLEN-1:0] 	    rs2_data,
-    output logic [MSB_REG_FILE-1:0] rd_addr,
-    output logic [XLEN-1:0] 	    immediate,
+    output logic [XLEN-1:0] 	     rs1_data,
+    output logic [XLEN-1:0] 	     rs2_data,
+    output logic [MSB_REG_FILE-1:0]  rd_addr,
+    output logic [XLEN-1:0] 	     immediate,
    
     //###########################################
     //### feedback signals
     //###########################################
     // comming from writeback stage.
-    input logic [MSB_REG_FILE-1:0]  wrb_rd_addr, //from Ps6
-    input logic 		    wrb_rd_write, //from Ps6
-    input logic [XLEN-1:0] 	    wrb_rd_data, //from Ps6
+    input logic [MSB_REG_FILE-1:0]   wrb_rd_addr, //from Ps6
+    input logic 		     wrb_rd_write, //from Ps6
+    input logic [XLEN-1:0] 	     wrb_rd_data, //from Ps6
     
     //###########################################
     //### control signals
     //###########################################
     // data mem control
-    output logic 		    ctrl_dmem_req, 
-    output logic 		    ctrl_dmem_write, 
-    output logic 		    ctrl_dmem_l_unsigned, 
-    output logic [1:0] 		    ctrl_dmem_n_bytes,
+    output logic 		     ctrl_dmem_req, 
+    output logic 		     ctrl_dmem_write, 
+    output logic 		     ctrl_dmem_l_unsigned, 
+    output logic [1:0] 		     ctrl_dmem_n_bytes,
     // alu control
-    output 			    e_alu_operation_sel ctrl_alu_op_sel,
-    output 			    e_alu_operand_a_sel ctrl_alu_a_sel, 
-    output 			    e_alu_operand_b_sel ctrl_alu_b_sel, 
+    output 			     e_alu_operation_sel ctrl_alu_op_sel,
+    output 			     e_alu_operand_a_sel ctrl_alu_a_sel, 
+    output 			     e_alu_operand_b_sel ctrl_alu_b_sel, 
     // write back to rf mux select
-    output 			    e_regfile_wb_sel ctrl_wb_to_rf_sel,
+    output 			     e_regfile_wb_sel ctrl_wb_to_rf_sel,
     // JALR set last bit to zero
-    output logic 		    set_alu_lsb_bit_zero,
+    output logic 		     set_alu_lsb_bit_zero,
+    // branch compare signals
+    output logic 		     ctrl_branch_enable,
+    output 			     e_branch_operation_sel ctrl_branch_operation,
+    // jump request sent to Fetch stage
+    output logic 		     ctrl_jump_request,
     
-    output logic 		    sel_next_pc_out,
-    output logic 		    ctrl_lui_inst,
-    output logic 		    ctrl_reg_wr   
+    output logic 		     ctrl_reg_wr   
     );
 
 
@@ -104,11 +111,18 @@ module Decode
    logic 			    ctrl_dmem_l_unsigned_nxt; 
    logic [1:0] 			    ctrl_dmem_n_bytes_nxt;
 
+   
+   logic 			    ctrl_branch_enable_nxt;
+   e_branch_operation_sel           ctrl_branch_operation_nxt;
 
+   logic 			    ctrl_jump_request_nxt;
+   
    logic 			    nop_sel;
    logic 			    nop_set;
    logic [NOP_CNT_WIDTH-1:0] 	    nop_count;
     
+   logic 			    ctrl_pc_stall_set_nxt;
+   logic [NOP_CNT_WIDTH-1:0] 	    ctrl_pc_stall_count_nxt;
 
    
    assign opcode   = instruction[ 6: 0];
@@ -185,18 +199,22 @@ module Decode
       // nop injection paramters
       nop_set   = 1'b0;
       nop_count =   '0;
-      
+
+      // branch comparator signals
+      ctrl_branch_enable_nxt    = 1'b0;
+      ctrl_branch_operation_nxt = CMP_BEQ;
+
+      // control jump request
+      ctrl_jump_request_nxt = 1'b0;
+            
       // ALU function and operands select
       ctrl_alu_op_sel_nxt  = ALU_ADD;
-      ctrl_alu_a_sel_nxt = ALU_ZERO;
-      ctrl_alu_b_sel_nxt = ALU_RS2; 
+      ctrl_alu_a_sel_nxt   = ALU_ZERO;
+      ctrl_alu_b_sel_nxt   = ALU_RS2; 
       
       // immediate value
       immediate_nxt = '0;
-      
-      // TODO: add description      
-      ctrl_lui_inst_nxt = 1'b0;
-      
+            
       // goes to pc mux, select 
       // pc+4 or alu data out.
       sel_next_pc       = 1'b0; 
@@ -213,6 +231,10 @@ module Decode
 
       // mask
       set_alu_lsb_bit_zero_nxt = 1'b0;
+
+      // pc stall control signals
+      ctrl_pc_stall_set_nxt = 1'b0;
+      ctrl_pc_stall_count_nxt = '0;
       
       
       unique case(opcode)
@@ -228,8 +250,7 @@ module Decode
 	MUL_AND_INT: begin
 	   ctrl_wb_to_rf_sel_nxt = WB_ALU_OUT;
 	   ctrl_alu_a_sel_nxt    = ALU_RS1;
-	   ctrl_alu_b_sel_nxt    = ALU_RS2; 
-	   sel_next_pc           = 1'b0; 
+	   ctrl_alu_b_sel_nxt    = ALU_RS2;  
 	   ctrl_reg_wr_nxt       = 1'b1;	   
 	   unique case(funct7)
 	     /*ADD, SLL, SLT 
@@ -382,9 +403,11 @@ module Decode
 	JALR: begin
 	   if(funct3 == 3'b000) begin
 	      nop_set                  = 1'b1;
-	      nop_count                = 4;
+	      nop_count                = 2;
+	      ctrl_jump_request_nxt    = 1'b1;
+	      ctrl_pc_stall_set_nxt    = 1'b1;
+	      ctrl_pc_stall_count_nxt  = 2;
 	      ctrl_wb_to_rf_sel_nxt    = WB_PC_PLS4;
-	      sel_next_pc              = 1'b1;
 	      ctrl_reg_wr_nxt          = 1'b1;
 	      ctrl_alu_op_sel_nxt      = ALU_ADD;
 	      ctrl_alu_a_sel_nxt       = ALU_RS1;
@@ -421,12 +444,12 @@ module Decode
 	 paded with zeros with PC 
 	 stored into rd register*/
 	AUIPC: begin
-	   ctrl_reg_wr_nxt     = 1'b1;
+	   ctrl_reg_wr_nxt       = 1'b1;
 	   ctrl_wb_to_rf_sel_nxt = WB_ALU_OUT;
-	   ctrl_alu_op_sel_nxt = ALU_ADD;
-	   ctrl_alu_a_sel_nxt  = ALU_PC;
-	   ctrl_alu_b_sel_nxt  = ALU_IMM; 
-	   immediate_nxt       = {instruction[31:12],12'b0};
+	   ctrl_alu_op_sel_nxt   = ALU_ADD;
+	   ctrl_alu_a_sel_nxt    = ALU_PC;
+	   ctrl_alu_b_sel_nxt    = ALU_IMM; 
+	   immediate_nxt         = {instruction[31:12],12'b0};
 	end
 	
 /*//////////////////////////////////////
@@ -441,18 +464,20 @@ module Decode
 	/*stores pc+4 in rd register*/
 	/*updates pc to pc + (sign extended immediate)*/
 	JAL: begin
-	   nop_set               = 1'b1;
-	   nop_count             = 4;   
-	   sel_next_pc           = 1'b1;
-	   ctrl_reg_wr_nxt       = 1'b1;
-	   ctrl_wb_to_rf_sel_nxt = WB_PC_PLS4;
-	   ctrl_alu_op_sel_nxt   = ALU_ADD;
-	   ctrl_alu_a_sel_nxt    = ALU_PC;
-	   ctrl_alu_b_sel_nxt    = ALU_IMM; 
-	   immediate_nxt         = {{12{instruction[31]}},
-				    instruction[19:12],
-				    instruction[20],
-				    instruction[30:21],1'b0};
+	   nop_set                 = 1'b1;
+	   nop_count               = 2;   
+	   ctrl_jump_request_nxt   = 1'b1;
+	   ctrl_pc_stall_set_nxt   = 1'b1;
+	   ctrl_pc_stall_count_nxt = 2;
+	   ctrl_reg_wr_nxt         = 1'b1;
+	   ctrl_wb_to_rf_sel_nxt   = WB_PC_PLS4;
+	   ctrl_alu_op_sel_nxt     = ALU_ADD;
+	   ctrl_alu_a_sel_nxt      = ALU_PC;
+	   ctrl_alu_b_sel_nxt      = ALU_IMM; 
+	   immediate_nxt           = {{12{instruction[31]}},
+				      instruction[19:12],
+				      instruction[20],
+				      instruction[30:21],1'b0};
 	end
 
 /*/////////////////////////////////////
@@ -466,13 +491,32 @@ module Decode
 	/*BEQ, BNE, BLT,
 	 BLTU, BGE, BGEU*/
 	BRANCH: begin
-	   ctrl_wb_to_rf_sel_nxt = WB_ALU_OUT;
+	   nop_set                 = 1'b1;
+	   nop_count               = 2;   
+	   ctrl_pc_stall_set_nxt   = 1'b1;
+	   ctrl_pc_stall_count_nxt = 2;
+	   ctrl_branch_enable_nxt  = 1'b1;
+	   ctrl_wb_to_rf_sel_nxt   = WB_ALU_OUT;
+	   ctrl_alu_op_sel_nxt     = ALU_ADD;
+	   ctrl_alu_a_sel_nxt      = ALU_PC;
+	   ctrl_alu_b_sel_nxt      = ALU_IMM; 	   
+	   immediate_nxt           = {{12{instruction[31]}},
+	                              instruction[7],
+	                              instruction[30:25],
+	                              instruction[11:8],1'b0};
 	   unique case(funct3)
-	     BEQ:;
-	     BNE:;
-	     BGE:;
-	     BLTU:;
-	     BGEU:;
+	     BEQ:
+	       ctrl_branch_operation_nxt = CMP_BEQ;
+	     BNE:
+	       ctrl_branch_operation_nxt = CMP_BNE;
+	     BLT: 
+	       ctrl_branch_operation_nxt = CMP_BLT;
+	     BLTU:
+	       ctrl_branch_operation_nxt = CMP_BLTU;
+	     BGE:
+	       ctrl_branch_operation_nxt = CMP_BGE;
+	     BGEU:
+	       ctrl_branch_operation_nxt = CMP_BGEU;
 	     default:;
 	   endcase // unique case (funct3)    
 	end
@@ -560,18 +604,6 @@ module Decode
 
    
    always_ff @(posedge clk or negedge rstn)
-     if(!rstn)
-       sel_next_pc_out <= '0;
-     else
-       sel_next_pc_out <= sel_next_pc;
-
-   
-   always_ff @(posedge clk or negedge rstn)
-     if(~rstn) ctrl_lui_inst <= '0;
-     else      ctrl_lui_inst <= ctrl_lui_inst_nxt;
-
-   
-   always_ff @(posedge clk or negedge rstn)
      if(~rstn) ctrl_reg_wr <= '0;
      else      ctrl_reg_wr <= ctrl_reg_wr_nxt;
 
@@ -579,8 +611,31 @@ module Decode
    always_ff @(posedge clk or negedge rstn)
      if(~rstn) set_alu_lsb_bit_zero <= 1'b0;
      else      set_alu_lsb_bit_zero <= set_alu_lsb_bit_zero_nxt;
+
+   always_ff @(posedge clk or negedge rstn)
+     if(~rstn) begin
+	ctrl_branch_enable    <= 1'b0;
+	ctrl_branch_operation <= CMP_BEQ; //'0
+     end
+     else begin
+	ctrl_branch_enable    <= ctrl_branch_enable_nxt;
+	ctrl_branch_operation <= ctrl_branch_operation_nxt;
+     end
    
-   
+   always_ff @(posedge clk or negedge rstn)
+     if(~rstn) begin
+	ctrl_pc_stall_set   <= 1'b0;
+	ctrl_pc_stall_count <= '0;
+     end
+     else begin
+	ctrl_pc_stall_set   <= ctrl_pc_stall_set_nxt;
+	ctrl_pc_stall_count <= ctrl_pc_stall_count_nxt;
+     end
+
+   always_ff @(posedge clk or negedge rstn)
+     if(~rstn) ctrl_jump_request <= 1'b0;
+     else      ctrl_jump_request <= ctrl_jump_request_nxt;
+
    
 /*///////////////////////
    ___    _  _____  _                        

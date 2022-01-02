@@ -1,8 +1,23 @@
-/*
+/*///////////////////////////////////////////////////////////////////
  
+ -> Block owner:  Shahar Dror - add your email if you wish 
+ -> Contributers: Chris Shakkour - chrisshakkour@gmail.com
  
+ -> Description: Execution macine.
  
- */
+ -> Features: 2-stage,
+              ALU,
+              integer MUL/DIV unit
+              float   MUL/DIV unit
+ 
+ -> module:
+   ___                      _        
+  | __|__ __ ___  __  _  _ | |_  ___ 
+  | _| \ \ // -_)/ _|| || ||  _|/ -_)
+  |___|/_\_\\___|\__| \_,_| \__|\___|
+                                                                      
+ *////////////////////////////////////////////////////////////////////
+
 module Execute
   import instructions_pkg::*;
    import control_pkg::*;
@@ -25,8 +40,6 @@ module Execute
    input logic [MSB_REG_FILE-1:0]  rd_addr,
    input logic [XLEN-1:0] 	   immediate, 
    
-   input logic 			   sel_next_pc,
-   input logic 			   ctrl_lui_inst,
    input logic 			   ctrl_reg_wr, 
    // data memory control signals
    // input from decode stage
@@ -42,20 +55,31 @@ module Execute
    //
    output logic [XLEN-1:0] 	   AluOut,
    output logic [MSB_REG_FILE-1:0] rdOut,
-   output logic 		   sel_next_pc_out,
    output logic [XLEN-1:0] 	   pc_pls4_out,
    output logic 		   ctrl_reg_wr_out ,
-   output logic [XLEN-1:0] 	   rs2_data_out   
+   output logic [XLEN-1:0] 	   rs2_data_out,
 
-);
+   // branch compare 
+   // ctrl and status
+   input logic 			   branch_enable,
+   input 			   e_branch_operation_sel branch_operation, 
+   output 			   e_branch_result branch_result_masked,
 
+   input logic 			   ctrl_jump_request_in,
+   output logic 		   ctrl_jump_request   
+   );
+
+   // branch pre smapled result
+   e_branch_result branch_result_masked_pre;   
+   
    logic [XLEN-1:0] 		   AluOut_nxt;
+   logic [XLEN-1:0] 		   AluOut_nxt_lsb_set;
    
    logic [XLEN-1:0] AluDataIn1;
    logic [XLEN-1:0] AluDataIn2;
    
 
-   // Operand A select
+   // Operand A MUX select
    always_comb begin
       unique case(ctrl_alu_a_sel)
 	ALU_ZERO:
@@ -70,19 +94,24 @@ module Execute
    end
 
 
-   // Operand B select
+   // Operand B MUX select
    always_comb begin
       unique case(ctrl_alu_b_sel)
 	ALU_RS2:
 	  AluDataIn2 = rs2_data;
 	ALU_IMM:
 	  AluDataIn2 = immediate;
-	default:
-	  AluDataIn2 = '0;
-      endcase   
+      endcase
    end
-   
 
+   
+/*/////////////////////
+     _    _    _   _ 
+    /_\  | |  | | | |
+   / _ \ | |__| |_| |
+  /_/ \_\|____|\___/ 
+ 
+ */////////////////////
    
 always_comb begin
    
@@ -98,25 +127,45 @@ always_comb begin
 		ALU_SRL : AluOut_nxt = AluDataIn1 >>   AluDataIn2[4:0];
 		ALU_SRA : AluOut_nxt = $signed(AluDataIn1) >>>  AluDataIn2[4:0]; //TODO check
 	endcase 
-end
+end // always_comb
 
-//######### REGISTERS EXE1 ##############
+   
+   assign AluOut_nxt_lsb_set = AluOut_nxt & {{XLEN-1{1'b1}}, ~set_alu_lsb_bit_zero};
+  
+   
+/*///////////////////////////////////////////////////
+   ___                       _                      
+  | _ ) _ _  __ _  _ _   __ | |_    __  _ __   _ __ 
+  | _ \| '_|/ _` || ' \ / _|| ' \  / _|| '  \ | '_ \
+  |___/|_|  \__,_||_||_|\__||_||_| \__||_|_|_|| .__/
+                                              |_|   
+  BranchComparator Unit
+ *////////////////////////////////////////////////////
 
-   always_ff @(posedge clk)
-     AluOut <= AluOut_nxt;
+   BranchComparator
+     BranchComparator_inst
+       (
+	.rs1_data      (rs1_data),
+	.rs2_data      (rs2_data),
+    	.enable        (branch_enable),
+	.operation     (branch_operation), 
+	.result_masked (branch_result_masked_pre)	     
+	);
 
-   always_ff @(posedge clk)
-     rdOut <= rd_addr;
-
-   always_ff @(posedge clk)
-     pc_pls4_out <= pc_pls4;
+      
+/*////////////////////////////////////////////
+    ___  ___   _  _  _____  ___   ___   _    
+   / __|/ _ \ | \| ||_   _|| _ \ / _ \ | |   
+  | (__| (_) || .` |  | |  |   /| (_) || |__ 
+   \___|\___/ |_|\_|  |_|  |_|_\ \___/ |____|
+                                             
+   Async Reset registers
+ *////////////////////////////////////////////
 
    always_ff @(posedge clk or negedge rstn)
-     if(!rstn)
-       sel_next_pc_out <= 1'b0;
-     else
-       sel_next_pc_out <= sel_next_pc;
-
+     if(~rstn) branch_result_masked <= BRANCH_NOT_TAKEN; //1'b0
+     else      branch_result_masked <= branch_result_masked_pre;
+   
    always_ff @(posedge clk)
      rs2_data_out <= rs2_data;
    always_ff @(posedge clk)
@@ -141,6 +190,30 @@ end
    always_ff @(posedge clk or negedge rstn)
      if(~rstn) ctrl_wb_to_rf_sel <= WB_ALU_OUT;
      else      ctrl_wb_to_rf_sel <= ctrl_wb_to_rf_sel_in;
+
+
+   always_ff @(posedge clk or negedge rstn)
+     if(~rstn) ctrl_jump_request <= 1'b0;
+     else      ctrl_jump_request <= ctrl_jump_request_in;   
+   
+   
+/*///////////////////////
+   ___    _  _____  _                        
+  |   \  /_\|_   _|/_\                       
+  | |) |/ _ \ | | / _ \                      
+  |___//_/ \_\|_|/_/ \_\                     
+                         
+   Ressetless registers                    
+ *///////////////////////
+
+   always_ff @(posedge clk)
+     AluOut <= AluOut_nxt_lsb_set;
+
+   always_ff @(posedge clk)
+     rdOut <= rd_addr;
+
+   always_ff @(posedge clk)
+     pc_pls4_out <= pc_pls4;
    
 endmodule 
 

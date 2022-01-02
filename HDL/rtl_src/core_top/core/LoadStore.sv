@@ -12,7 +12,6 @@ module LoadStore
    input logic 			     rstn,
    input logic [XLEN-1:0] 	     AluData,
    input logic [MSB_REG_FILE-1:0]    rd, 
-   input logic 			     sel_next_pc,
    input logic [XLEN-1:0] 	     pc_pls4, 
    input logic 			     ctrl_reg_wr,
    input logic [XLEN-1:0] 	     rs2_data,
@@ -28,7 +27,6 @@ module LoadStore
    
    output logic [XLEN-1:0] 	     AluOut,
    output logic [MSB_REG_FILE-1:0]   rdOut,
-   output logic 		     sel_next_pc_out,
    output logic [XLEN-1:0] 	     pc_pls4_out,
    output logic 		     ctrl_reg_wr_out,
 				     mem_read_write.core_side load_store_port   
@@ -60,12 +58,6 @@ always_ff @(posedge clk)
 
 always_ff @(posedge clk)
 	ctrl_reg_wr_out <=ctrl_reg_wr;
-
-always_ff @(posedge clk or negedge rstn)
-	if(!rstn)
-	sel_next_pc_out <= 1'b0;
-	else
-	sel_next_pc_out <= sel_next_pc;
 
    always_ff @(posedge clk or negedge rstn)
      if(~rstn) ctrl_wb_to_rf_sel <= WB_ALU_OUT;
