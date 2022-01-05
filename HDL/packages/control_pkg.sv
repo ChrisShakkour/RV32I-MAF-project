@@ -75,7 +75,17 @@ package control_pkg;
     BRANCH_NOT_TAKEN = 1'b0,
     BRANCH_TAKEN     = 1'b1
     } e_branch_result;
-   
+
+
+   /*forwarding unit*/
+   typedef enum logic [1:0]
+   {
+    NO_HAZARD  = 2'b00,
+    FROM_EXE   = 2'b01,
+    FROM_LS    = 2'b10,
+    FROM_WB    = 2'b11
+    } e_data_hazard;
+
    
    
 		

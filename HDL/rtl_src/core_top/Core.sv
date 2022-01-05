@@ -106,8 +106,9 @@ module Core
    logic 		   inst_addr_error;
    logic [XLEN-1:0] 	   instruction;   
 
-   
-   		    
+   e_data_hazard aluin1_hazard_sel;
+   e_data_hazard aluin2_hazard_sel;
+
 /*//////////////////////////////////////////////
     ___            _     ___      _        _    
    |_ _| _ _   ___| |_  | __|___ | |_  __ | |_  
@@ -212,7 +213,10 @@ module Core
 	.ctrl_dmem_req         (dec_ctrl_dmem_req),
 	.ctrl_dmem_write       (dec_ctrl_dmem_write),   
 	.ctrl_dmem_l_unsigned  (dec_ctrl_dmem_l_unsigned),
-	.ctrl_dmem_n_bytes     (dec_ctrl_dmem_n_bytes)
+	.ctrl_dmem_n_bytes     (dec_ctrl_dmem_n_bytes),
+
+	.aluin1_hazard_sel_o   (aluin1_hazard_sel),
+        .aluin2_hazard_sel_o   (aluin2_hazard_sel)
 	);
 
    // instruction comming from memory
@@ -284,7 +288,11 @@ module Core
 	.branch_operation        (ctrl_branch_operation), 
 	.branch_result_masked    (exe_branch_result),
 	.ctrl_jump_request_in    (dec_jump_request),
-	.ctrl_jump_request       (exe_jump_request)    
+	.ctrl_jump_request       (exe_jump_request),
+
+        .data_from_wb             (DataWb),
+        .aluin1_hazard_sel        (aluin1_hazard_sel),
+        .aluin2_hazard_sel        (aluin2_hazard_sel)	
 	);
 
 
