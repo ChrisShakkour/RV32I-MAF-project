@@ -40,13 +40,15 @@ module RegisterFile #
      internal_regs[0] <= '0;
    
    /* rs0 write port */
-   always_ff @(posedge clk)
+   always_ff @(posedge clk) 
      if(rs0_write && rs0_addr!=0) internal_regs[rs0_addr] <= rs0_data_in;
    
    /* rs1 read port */
-   assign rs1_data_out = internal_regs[rs1_addr];
+   assign rs1_data_out = ((rs0_addr == rs1_addr) && (rs0_write)) ?
+			  rs0_data_in : internal_regs[rs1_addr];
    
    /* rs2 read port */
-   assign rs2_data_out = internal_regs[rs2_addr];
+   assign rs2_data_out = ((rs0_addr == rs2_addr) && (rs0_write)) ?
+	  		  rs0_data_in : internal_regs[rs2_addr];
    
 endmodule

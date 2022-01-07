@@ -1,0 +1,102 @@
+
+fib_rv32i.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+       0:	00000013          	nop
+       4:	00000013          	nop
+       8:	00000013          	nop
+       c:	00000013          	nop
+      10:	00000013          	nop
+
+00000014 <reset_handler>:
+      14:	00000093          	li	ra,0
+      18:	00000113          	li	sp,0
+      1c:	00000193          	li	gp,0
+      20:	00000213          	li	tp,0
+      24:	00000293          	li	t0,0
+      28:	00000313          	li	t1,0
+      2c:	00000393          	li	t2,0
+      30:	00000413          	li	s0,0
+      34:	00000493          	li	s1,0
+      38:	00000513          	li	a0,0
+      3c:	00000593          	li	a1,0
+      40:	00000613          	li	a2,0
+      44:	00000693          	li	a3,0
+      48:	00000713          	li	a4,0
+      4c:	00000793          	li	a5,0
+      50:	00000813          	li	a6,0
+      54:	00000893          	li	a7,0
+      58:	00000913          	li	s2,0
+      5c:	00000993          	li	s3,0
+      60:	00000a13          	li	s4,0
+      64:	00000a93          	li	s5,0
+      68:	00000b13          	li	s6,0
+      6c:	00000b93          	li	s7,0
+      70:	00000c13          	li	s8,0
+      74:	00000c93          	li	s9,0
+      78:	00000d13          	li	s10,0
+      7c:	00000d93          	li	s11,0
+      80:	00000e13          	li	t3,0
+      84:	00000e93          	li	t4,0
+      88:	00000f13          	li	t5,0
+      8c:	00000f93          	li	t6,0
+      90:	00008137          	lui	sp,0x8
+      94:	08c000ef          	jal	ra,120 <main>
+      98:	00100073          	ebreak
+
+0000009c <fib>:
+      9c:	fe010113          	addi	sp,sp,-32 # 7fe0 <main+0x7ec0>
+      a0:	00112e23          	sw	ra,28(sp)
+      a4:	00812c23          	sw	s0,24(sp)
+      a8:	00912a23          	sw	s1,20(sp)
+      ac:	02010413          	addi	s0,sp,32
+      b0:	fea42623          	sw	a0,-20(s0)
+      b4:	fec42703          	lw	a4,-20(s0)
+      b8:	00100793          	li	a5,1
+      bc:	00000013          	nop
+      c0:	00e7c663          	blt	a5,a4,cc <fib+0x30>
+      c4:	fec42783          	lw	a5,-20(s0)
+      c8:	0400006f          	j	108 <fib+0x6c>
+      cc:	fec42783          	lw	a5,-20(s0)
+      d0:	00000013          	nop
+      d4:	00000013          	nop
+      d8:	fff78793          	addi	a5,a5,-1
+      dc:	00078513          	mv	a0,a5
+      e0:	fbdff0ef          	jal	ra,9c <fib>
+      e4:	00050493          	mv	s1,a0
+      e8:	fec42783          	lw	a5,-20(s0)
+      ec:	00000013          	nop
+      f0:	00000013          	nop
+      f4:	ffe78793          	addi	a5,a5,-2
+      f8:	00078513          	mv	a0,a5
+      fc:	fa1ff0ef          	jal	ra,9c <fib>
+     100:	00050793          	mv	a5,a0
+     104:	00f487b3          	add	a5,s1,a5
+     108:	00078513          	mv	a0,a5
+     10c:	01c12083          	lw	ra,28(sp)
+     110:	01812403          	lw	s0,24(sp)
+     114:	01412483          	lw	s1,20(sp)
+     118:	02010113          	addi	sp,sp,32
+     11c:	00008067          	ret
+
+00000120 <main>:
+     120:	fe010113          	addi	sp,sp,-32
+     124:	00112e23          	sw	ra,28(sp)
+     128:	00812c23          	sw	s0,24(sp)
+     12c:	02010413          	addi	s0,sp,32
+     130:	00900793          	li	a5,9
+     134:	fef42623          	sw	a5,-20(s0)
+     138:	fe042423          	sw	zero,-24(s0)
+     13c:	fec42503          	lw	a0,-20(s0)
+     140:	f5dff0ef          	jal	ra,9c <fib>
+     144:	fea42423          	sw	a0,-24(s0)
+     148:	00000793          	li	a5,0
+     14c:	00078513          	mv	a0,a5
+     150:	01c12083          	lw	ra,28(sp)
+     154:	01812403          	lw	s0,24(sp)
+     158:	02010113          	addi	sp,sp,32
+     15c:	00008067          	ret
+	...

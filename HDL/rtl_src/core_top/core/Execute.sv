@@ -40,7 +40,12 @@ module Execute
    input logic [MSB_REG_FILE-1:0]  rd_addr,
    input logic [XLEN-1:0] 	   immediate, 
    
-   input logic 			   ctrl_reg_wr, 
+   input logic 			   ctrl_reg_wr,
+
+   input logic [XLEN-1:0] 	   data_from_wb,
+   input logic [1:0]        	   aluin1_hazard_sel,
+   input logic [1:0] 	   	   aluin2_hazard_sel,    
+
    // data memory control signals
    // input from decode stage
    input logic 			   ctrl_dmem_req_in, 
@@ -75,9 +80,42 @@ module Execute
    logic [XLEN-1:0] 		   AluOut_nxt;
    logic [XLEN-1:0] 		   AluOut_nxt_lsb_set;
    
-   logic [XLEN-1:0] AluDataIn1;
-   logic [XLEN-1:0] AluDataIn2;
+   logic [XLEN-1:0]                AluDataIn1;
+   logic [XLEN-1:0]                AluDataIn2;
+
+   logic [XLEN-1:0] 		   rs1_data_post;
+   logic [XLEN-1:0] 		   rs2_data_post;   
    
+
+   // forwarding operand A
+   always_comb begin
+	   unique case(aluin1_hazard_sel)
+             FROM_EXE:
+		     rs1_data_post = AluOut; 
+	     FROM_LS:
+		     rs1_data_post = data_from_wb;
+	     NO_HAZARD:
+	             rs1_data_post = rs1_data;
+	     default:
+	             rs1_data_post = rs1_data;		     
+	   endcase
+   end
+
+   // forwarding operand B
+   always_comb begin
+	   unique case(aluin2_hazard_sel)
+             FROM_EXE:
+		     rs2_data_post = AluOut; 
+	     FROM_LS:
+		     rs2_data_post = data_from_wb;
+	     NO_HAZARD:
+	             rs2_data_post = rs2_data;
+	     default:
+	             rs2_data_post = rs2_data;		     
+	   endcase
+   end
+
+
 
    // Operand A MUX select
    always_comb begin
@@ -85,7 +123,7 @@ module Execute
 	ALU_ZERO:
 	  AluDataIn1 = '0;
 	ALU_RS1:
-	  AluDataIn1 = rs1_data;
+	  AluDataIn1 = rs1_data_post;
 	ALU_PC:
 	  AluDataIn1 = pc;
 	default:
@@ -98,7 +136,7 @@ module Execute
    always_comb begin
       unique case(ctrl_alu_b_sel)
 	ALU_RS2:
-	  AluDataIn2 = rs2_data;
+	  AluDataIn2 = rs2_data_post;
 	ALU_IMM:
 	  AluDataIn2 = immediate;
       endcase
@@ -145,8 +183,8 @@ end // always_comb
    BranchComparator
      BranchComparator_inst
        (
-	.rs1_data      (rs1_data),
-	.rs2_data      (rs2_data),
+	.rs1_data      (rs1_data_post),
+	.rs2_data      (rs2_data_post),
     	.enable        (branch_enable),
 	.operation     (branch_operation), 
 	.result_masked (branch_result_masked_pre)	     
@@ -167,7 +205,7 @@ end // always_comb
      else      branch_result_masked <= branch_result_masked_pre;
    
    always_ff @(posedge clk)
-     rs2_data_out <= rs2_data;
+     rs2_data_out <= rs2_data_post;
    always_ff @(posedge clk)
      ctrl_reg_wr_out   <= ctrl_reg_wr; 
 

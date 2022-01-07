@@ -74,7 +74,10 @@ module Decode
     // jump request sent to Fetch stage
     output logic 		     ctrl_jump_request,
     
-    output logic 		     ctrl_reg_wr   
+    output logic 		     ctrl_reg_wr,
+
+    output                           e_data_hazard aluin1_hazard_sel_o,
+    output 	   	             e_data_hazard aluin2_hazard_sel_o    
     );
 
 
@@ -124,6 +127,9 @@ module Decode
    logic 			    ctrl_pc_stall_set_nxt;
    logic [NOP_CNT_WIDTH-1:0] 	    ctrl_pc_stall_count_nxt;
 
+   //data hazard
+   e_data_hazard              	    aluin1_hazard_sel;
+   e_data_hazard   		    aluin2_hazard_sel;   
    
    assign opcode   = instruction[ 6: 0];
    assign funct3   = instruction[14:12];
@@ -184,6 +190,21 @@ module Decode
 	.rs2_addr        (rs2_addr)        
 	);
 
+
+
+//Forwarding
+    ForwardingUnit
+	ForwardingUnit_inst
+	(
+	.clk               (clk),
+        .rs1               (rs1_addr),
+        .rs2               (rs2_addr),
+        .rd                (rd_addr_nxt),
+	.rd_wr             (ctrl_reg_wr_nxt),
+                                            
+	.aluin1_hazard_sel (aluin1_hazard_sel),	
+        .aluin2_hazard_sel (aluin2_hazard_sel)
+	);
 
 /*/////////////////////////////////////////////////////////
    ___                    _              ___  ___  __  __ 
@@ -500,7 +521,7 @@ module Decode
 	   ctrl_alu_op_sel_nxt     = ALU_ADD;
 	   ctrl_alu_a_sel_nxt      = ALU_PC;
 	   ctrl_alu_b_sel_nxt      = ALU_IMM; 	   
-	   immediate_nxt           = {{12{instruction[31]}},
+	   immediate_nxt           = {{20{instruction[31]}},
 	                              instruction[7],
 	                              instruction[30:25],
 	                              instruction[11:8],1'b0};
@@ -635,6 +656,17 @@ module Decode
    always_ff @(posedge clk or negedge rstn)
      if(~rstn) ctrl_jump_request <= 1'b0;
      else      ctrl_jump_request <= ctrl_jump_request_nxt;
+
+   always_ff @(posedge clk or negedge rstn) begin
+      if(~rstn) begin
+            aluin1_hazard_sel_o <= NO_HAZARD;
+            aluin2_hazard_sel_o <= NO_HAZARD;
+      end
+      else begin
+            aluin1_hazard_sel_o <= aluin1_hazard_sel;
+            aluin2_hazard_sel_o <= aluin2_hazard_sel;	      
+      end
+   end
 
    
 /*///////////////////////
