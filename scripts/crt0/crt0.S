@@ -17,38 +17,18 @@
 //.......................................
 /* Fixed adresses for special handlers */	
 //.......................................
-
-.org 0x00
-jal x0, _start
-	
-.org 0x04
-jal x0, reset_handler
-
-.org 0x08
-jal x0, call_main_handler
-
-.org 0x0C
-jal x0, end_of_main_handler
-
-// TODO: add handler
-.org 0x10
-nop
-//jal x0, illegal_instruction_handler
-
-// TODO: add handler
-.org 0x14
-nop
-//jal x0, copy_rf_to_mem
-
-.org 0x18
-jal x0, idle_handler
+reserved:	
+	.org 0x00
+	jal x0, _start
+	.rept 7
+	nop
+	.endr
 
 // stuck at, indicator
 // of end of execution.
-idle_handler:
-	.org 0x1C
-	nop
-	jal x0, idle_handler
+idle:
+	.org 0x20
+	jal x0, idle
 
 	
 //.......................................
@@ -123,7 +103,7 @@ call_main_handler:
 // register s0.
 end_of_main_handler:
 	mv s0, a0
-	jal x0, idle_handler
+	jal x0, idle
 	
 	
 		

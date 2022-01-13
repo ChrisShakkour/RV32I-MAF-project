@@ -21,7 +21,7 @@ import sys
 
 c_2_asm   = 'riscv32-unknown-elf-gcc -S {} -ffreestanding -march={} -mabi={} -o {}'     
 asm_2_elf = 'riscv32-unknown-elf-gcc -O3 -nostartfiles -D__riscv_ $CRT0 {} -march={} -mabi={} -T {} -o {}'  
-elf_2_txt = 'riscv32-unknown-elf-objdump -gd {} > {}'
+elf_2_txt = 'riscv32-unknown-elf-objdump -d -h {} > {}'
 elf_2_txt_mono = elf_2_txt+" -Mno-aliases -M numeric"
 elf_2_mem = 'riscv32-unknown-elf-objcopy --srec-len 1 --output-target=verilog {} {}' 
 
@@ -119,7 +119,7 @@ run assemble
 generation command
 '''
 def gen_asm(c_file, arch, abi, dest):
-    print('generating asemble file...')
+    print('\ngenerating asemble file...')
     cmd=c_2_asm.format(c_file, arch, abi, dest)
     print('command : %s' %(cmd))
     os.system(cmd)
@@ -130,7 +130,7 @@ run executable
 generation command
 '''
 def gen_elf(asm_file, arch, abi, linker, dest):
-    print('generating executable file...')
+    print('\ngenerating executable file...')
     cmd=asm_2_elf.format(asm_file, arch, abi, linker, dest)
     print('command : %s' %(cmd))
     os.system(cmd)
@@ -141,7 +141,7 @@ run text
 generation command
 '''
 def gen_txt(elf_file, dest):
-    print('generating text file...')
+    print('\ngenerating text file...')
     cmd=elf_2_txt.format(elf_file, dest)
     print('command : %s' %(cmd))
     os.system(cmd)
@@ -152,7 +152,7 @@ run text mono
 generation command
 '''
 def gen_txt_mono(elf_file, dest):
-    print('generating Mono text file...')
+    print('\ngenerating Mono text file...')
     cmd=elf_2_txt_mono.format(elf_file, dest)
     print('command : %s' %(cmd))
     os.system(cmd)
@@ -164,7 +164,7 @@ run generate memory
 image, .mem file
 '''
 def gen_mem(elf_file, dest):
-    print('generating memory file...')
+    print('\ngenerating memory file...')
     cmd=elf_2_mem.format(elf_file, dest)
     print('command : %s' %(cmd))
     os.system(cmd)
@@ -192,12 +192,12 @@ def main():
 
     if ext == 'c':
         gen_asm(src_realpath, args.arch, args.abi, dest_realpath+'.s')
-    if args.elf is not None:
+    if args.elf:
         gen_elf(dest_realpath+'.s', args.arch, args.abi, '{}'.format(os.getenv('LINKER')), dest_realpath+'.elf')
-    if args.txt is not None:
+    if args.txt:
         gen_txt(dest_realpath+'.elf', dest_realpath+'.txt')
         gen_txt_mono(dest_realpath+'.elf', dest_realpath+'.txt.mono')
-    if args.mem is not None:
+    if args.mem:
         gen_mem(dest_realpath+'.elf', dest_realpath+'.mem')
         
     
