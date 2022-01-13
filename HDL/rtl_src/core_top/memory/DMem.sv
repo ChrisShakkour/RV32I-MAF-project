@@ -28,7 +28,8 @@ module DMem
     parameter integer  DMEM_SIZE=memory_pkg::DMEM_BYTES,
     parameter integer  START_ADDR=memory_pkg::IMEM_BYTES,
     parameter integer  ADDR_W=memory_pkg::MEM_ADDR_WIDTH,
-    localparam integer WORD_W=memory_pkg::MEM_WORD_WIDTH
+    localparam integer WORD_W=memory_pkg::MEM_WORD_WIDTH,
+    localparam integer END_ADDR=START_ADDR+DMEM_SIZE
     )
    (
     input logic 	      clk,         // clock
@@ -46,7 +47,7 @@ module DMem
    // data memory starts
    // from 0x0000_4000 and ends
    // in 0x0000_FFFF, ~48KByte
-   logic [7:0] 		      dmem_ram [DMEM_SIZE-1:START_ADDR];
+   logic [7:0] 		      dmem_ram [END_ADDR-1:START_ADDR];
    logic 		      valid_addr;
    logic 		      valid_read;
    logic 		      valid_write;
@@ -55,7 +56,7 @@ module DMem
 
    // valid indication signals 
    // before Load/Store operations
-   assign valid_addr  = (addr inside{[START_ADDR:DMEM_SIZE-1]});
+   assign valid_addr  = (addr inside{[START_ADDR:END_ADDR-1]});
    assign valid_read  = (valid_addr & ~write_en);
    assign valid_write = (valid_addr & write_en);
    

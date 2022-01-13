@@ -1,0 +1,68 @@
+
+* address map visualizasion
+
+   ________________ 
+  |     STACK      | -> 0xFFFF
+  |________________|
+  |                |
+  |                | 
+  |  UNALLOCATED   |
+  |________________| 
+  |	 HEAP      |
+  |________________|
+  |      BSS       |
+  |________________|
+  |      DATA      |
+  |________________| 
+  |     RODATA     |
+  |________________| -> 0x4000
+  |                |
+  |      CODE      |
+  |	           |
+  |________________| -> 0x0000
+
+
+CODE: (.text)
+	The code segment, also known as text segment,
+	contains executable code and is generally
+	read-only and fixed size.
+
+
+RODATA: (.rodata, .srodata, .rdata)
+	read/read only data
+
+
+DATA: (.data, .sdata)
+	The data segment contains initialized static variables,
+    	i.e. global variables and local static variables which
+     	have a defined value and can be modified.
+
+
+BSS: (.bss, .sbss)
+	The BSS segment contains uninitialized static data,
+	both variables and constants, i.e. global variables
+	and local static variables that are initialized to
+	zero or do not have explicit initialization in source code.
+
+
+HEAP:
+	The heap segment contains dynamically allocated memory,
+	commonly begins at the end of the BSS segment and grows
+	to larger addresses from there. It is managed by malloc,
+	calloc, realloc, and free.
+
+
+STACK: initialized to 0xFFFF in crt0 script.
+	The stack segment contains the call stack,
+	a LIFO structure, typically located in the
+	higher parts of memory. A "stack pointer"
+	register tracks the top of the stack; it
+	is adjusted each time a value is "pushed"
+	onto the stack. The set of values pushed
+	for one function call is termed a "stack frame".
+	A stack frame consists at minimum of a return address.
+	Automatic variables are also allocated on the stack.
+
+
+UNALLOCATED:  occupies dynamic HEAP  expansion upwards
+                       dynamic STACK expansion downwards

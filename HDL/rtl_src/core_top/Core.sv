@@ -88,9 +88,6 @@ module Core
    e_branch_result          exe_branch_result;
    
    logic 		    dec_ctrl_pc_stall_set;
-   logic [NOP_CNT_WIDTH-1:0] dec_ctrl_pc_stall_count;
-   
-
    
    // jump request logic
    logic 		    dec_jump_request;
@@ -137,7 +134,7 @@ module Core
 	
 	// pc stall signals
 	.pc_stall_set        (dec_ctrl_pc_stall_set),
-	.pc_stall_count      (dec_ctrl_pc_stall_count),
+	.load_hazzard_stall  (1'b0),
 	
 	// comming from execution stage
 	.branch_result       (exe_branch_result),
@@ -198,7 +195,6 @@ module Core
 
 	// stall signals
 	.ctrl_pc_stall_set     (dec_ctrl_pc_stall_set),
-	.ctrl_pc_stall_count   (dec_ctrl_pc_stall_count),
 
 	//write back rf mux sel
 	.ctrl_wb_to_rf_sel     (dec_ctrl_wb_to_rf_sel),

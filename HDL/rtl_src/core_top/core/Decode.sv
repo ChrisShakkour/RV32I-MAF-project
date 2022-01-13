@@ -36,7 +36,6 @@ module Decode
     output logic [XLEN-1:0] 	     pc_pls4, 
 
     output logic 		     ctrl_pc_stall_set,
-    output logic [NOP_CNT_WIDTH-1:0] ctrl_pc_stall_count,
 
     // going to exe stage.
     output logic [XLEN-1:0] 	     rs1_data,
@@ -125,8 +124,7 @@ module Decode
    logic [NOP_CNT_WIDTH-1:0] 	    nop_count;
     
    logic 			    ctrl_pc_stall_set_nxt;
-   logic [NOP_CNT_WIDTH-1:0] 	    ctrl_pc_stall_count_nxt;
-
+   
    //data hazard
    e_data_hazard              	    aluin1_hazard_sel;
    e_data_hazard   		    aluin2_hazard_sel;   
@@ -255,7 +253,6 @@ module Decode
 
       // pc stall control signals
       ctrl_pc_stall_set_nxt = 1'b0;
-      ctrl_pc_stall_count_nxt = '0;
       
       
       unique case(opcode)
@@ -313,8 +310,7 @@ module Decode
 	     
 	     /*MUL, MULH, MULHSU
 	      MULHU, DIV, DIVU
-	      REM, REMU*/
-	     
+	      REM, REMU*/	     
 	     M_EXTENSION: begin
 		unique case(funct3)
 		  MUL:;		    
@@ -426,8 +422,6 @@ module Decode
 	      nop_set                  = 1'b1;
 	      nop_count                = 2;
 	      ctrl_jump_request_nxt    = 1'b1;
-	      ctrl_pc_stall_set_nxt    = 1'b1;
-	      ctrl_pc_stall_count_nxt  = 2;
 	      ctrl_wb_to_rf_sel_nxt    = WB_PC_PLS4;
 	      ctrl_reg_wr_nxt          = 1'b1;
 	      ctrl_alu_op_sel_nxt      = ALU_ADD;
@@ -488,8 +482,6 @@ module Decode
 	   nop_set                 = 1'b1;
 	   nop_count               = 2;   
 	   ctrl_jump_request_nxt   = 1'b1;
-	   ctrl_pc_stall_set_nxt   = 1'b1;
-	   ctrl_pc_stall_count_nxt = 2;
 	   ctrl_reg_wr_nxt         = 1'b1;
 	   ctrl_wb_to_rf_sel_nxt   = WB_PC_PLS4;
 	   ctrl_alu_op_sel_nxt     = ALU_ADD;
@@ -515,7 +507,6 @@ module Decode
 	   nop_set                 = 1'b1;
 	   nop_count               = 2;   
 	   ctrl_pc_stall_set_nxt   = 1'b1;
-	   ctrl_pc_stall_count_nxt = 2;
 	   ctrl_branch_enable_nxt  = 1'b1;
 	   ctrl_wb_to_rf_sel_nxt   = WB_ALU_OUT;
 	   ctrl_alu_op_sel_nxt     = ALU_ADD;
@@ -644,14 +635,8 @@ module Decode
      end
    
    always_ff @(posedge clk or negedge rstn)
-     if(~rstn) begin
-	ctrl_pc_stall_set   <= 1'b0;
-	ctrl_pc_stall_count <= '0;
-     end
-     else begin
-	ctrl_pc_stall_set   <= ctrl_pc_stall_set_nxt;
-	ctrl_pc_stall_count <= ctrl_pc_stall_count_nxt;
-     end
+     if(~rstn) ctrl_pc_stall_set   <= 1'b0;
+     else      ctrl_pc_stall_set   <= ctrl_pc_stall_set_nxt;
 
    always_ff @(posedge clk or negedge rstn)
      if(~rstn) ctrl_jump_request <= 1'b0;
