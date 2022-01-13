@@ -1,136 +1,143 @@
 
 /home/christians/git/RV32I-MAF-project/verif/tests/TowerOfHanoi/TowerOfHanoi.elf:     file format elf32-littleriscv
 
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001c8  00000000  00000000  00001000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .riscv.attributes 0000001c  00000000  00000000  000011c8  2**0
+                  CONTENTS, READONLY
+  2 .comment      00000012  00000000  00000000  000011e4  2**0
+                  CONTENTS, READONLY
 
 Disassembly of section .text:
 
-00000000 <idle_handler-0x1c>:
-       0:	0240006f          	jal	x0,24 <_start>
-       4:	04c0006f          	jal	x0,50 <reset_handler>
-       8:	0d00006f          	jal	x0,d8 <call_main_handler>
-       c:	0dc0006f          	jal	x0,e8 <end_of_main_handler>
-      10:	00000013          	addi	x0,x0,0
-      14:	00000013          	addi	x0,x0,0
-      18:	0040006f          	jal	x0,1c <idle_handler>
+00000000 <reserved>:
+   0:	0240006f          	jal	x0,24 <_start>
+   4:	00000013          	addi	x0,x0,0
+   8:	00000013          	addi	x0,x0,0
+   c:	00000013          	addi	x0,x0,0
+  10:	00000013          	addi	x0,x0,0
+  14:	00000013          	addi	x0,x0,0
+  18:	00000013          	addi	x0,x0,0
+  1c:	00000013          	addi	x0,x0,0
 
-0000001c <idle_handler>:
-      1c:	00000013          	addi	x0,x0,0
-      20:	ffdff06f          	jal	x0,1c <idle_handler>
+00000020 <idle>:
+  20:	0000006f          	jal	x0,20 <idle>
 
 00000024 <_start>:
-      24:	00000013          	addi	x0,x0,0
-      28:	00000013          	addi	x0,x0,0
-      2c:	00000013          	addi	x0,x0,0
-      30:	00000013          	addi	x0,x0,0
-      34:	00000013          	addi	x0,x0,0
-      38:	00000013          	addi	x0,x0,0
-      3c:	00000013          	addi	x0,x0,0
-      40:	00000013          	addi	x0,x0,0
-      44:	00000013          	addi	x0,x0,0
-      48:	00000013          	addi	x0,x0,0
-      4c:	0040006f          	jal	x0,50 <reset_handler>
+  24:	00000013          	addi	x0,x0,0
+  28:	00000013          	addi	x0,x0,0
+  2c:	00000013          	addi	x0,x0,0
+  30:	00000013          	addi	x0,x0,0
+  34:	00000013          	addi	x0,x0,0
+  38:	00000013          	addi	x0,x0,0
+  3c:	00000013          	addi	x0,x0,0
+  40:	00000013          	addi	x0,x0,0
+  44:	00000013          	addi	x0,x0,0
+  48:	00000013          	addi	x0,x0,0
+  4c:	0040006f          	jal	x0,50 <reset_handler>
 
 00000050 <reset_handler>:
-      50:	00000093          	addi	x1,x0,0
-      54:	00000113          	addi	x2,x0,0
-      58:	00000193          	addi	x3,x0,0
-      5c:	00000213          	addi	x4,x0,0
-      60:	00000293          	addi	x5,x0,0
-      64:	00000313          	addi	x6,x0,0
-      68:	00000393          	addi	x7,x0,0
-      6c:	00000413          	addi	x8,x0,0
-      70:	00000493          	addi	x9,x0,0
-      74:	00000513          	addi	x10,x0,0
-      78:	00000593          	addi	x11,x0,0
-      7c:	00000613          	addi	x12,x0,0
-      80:	00000693          	addi	x13,x0,0
-      84:	00000713          	addi	x14,x0,0
-      88:	00000793          	addi	x15,x0,0
-      8c:	00000813          	addi	x16,x0,0
-      90:	00000893          	addi	x17,x0,0
-      94:	00000913          	addi	x18,x0,0
-      98:	00000993          	addi	x19,x0,0
-      9c:	00000a13          	addi	x20,x0,0
-      a0:	00000a93          	addi	x21,x0,0
-      a4:	00000b13          	addi	x22,x0,0
-      a8:	00000b93          	addi	x23,x0,0
-      ac:	00000c13          	addi	x24,x0,0
-      b0:	00000c93          	addi	x25,x0,0
-      b4:	00000d13          	addi	x26,x0,0
-      b8:	00000d93          	addi	x27,x0,0
-      bc:	00000e13          	addi	x28,x0,0
-      c0:	00000e93          	addi	x29,x0,0
-      c4:	00000f13          	addi	x30,x0,0
-      c8:	00000f93          	addi	x31,x0,0
-      cc:	00010137          	lui	x2,0x10
-      d0:	fe010113          	addi	x2,x2,-32 # ffe0 <main+0xfe5c>
-      d4:	0040006f          	jal	x0,d8 <call_main_handler>
+  50:	00000093          	addi	x1,x0,0
+  54:	00000113          	addi	x2,x0,0
+  58:	00000193          	addi	x3,x0,0
+  5c:	00000213          	addi	x4,x0,0
+  60:	00000293          	addi	x5,x0,0
+  64:	00000313          	addi	x6,x0,0
+  68:	00000393          	addi	x7,x0,0
+  6c:	00000413          	addi	x8,x0,0
+  70:	00000493          	addi	x9,x0,0
+  74:	00000513          	addi	x10,x0,0
+  78:	00000593          	addi	x11,x0,0
+  7c:	00000613          	addi	x12,x0,0
+  80:	00000693          	addi	x13,x0,0
+  84:	00000713          	addi	x14,x0,0
+  88:	00000793          	addi	x15,x0,0
+  8c:	00000813          	addi	x16,x0,0
+  90:	00000893          	addi	x17,x0,0
+  94:	00000913          	addi	x18,x0,0
+  98:	00000993          	addi	x19,x0,0
+  9c:	00000a13          	addi	x20,x0,0
+  a0:	00000a93          	addi	x21,x0,0
+  a4:	00000b13          	addi	x22,x0,0
+  a8:	00000b93          	addi	x23,x0,0
+  ac:	00000c13          	addi	x24,x0,0
+  b0:	00000c93          	addi	x25,x0,0
+  b4:	00000d13          	addi	x26,x0,0
+  b8:	00000d93          	addi	x27,x0,0
+  bc:	00000e13          	addi	x28,x0,0
+  c0:	00000e93          	addi	x29,x0,0
+  c4:	00000f13          	addi	x30,x0,0
+  c8:	00000f93          	addi	x31,x0,0
+  cc:	00010137          	lui	x2,0x10
+  d0:	fe010113          	addi	x2,x2,-32 # ffe0 <main+0xfe5c>
+  d4:	0040006f          	jal	x0,d8 <call_main_handler>
 
 000000d8 <call_main_handler>:
-      d8:	00000513          	addi	x10,x0,0
-      dc:	00000593          	addi	x11,x0,0
-      e0:	0a4000ef          	jal	x1,184 <main>
-      e4:	0040006f          	jal	x0,e8 <end_of_main_handler>
+  d8:	00000513          	addi	x10,x0,0
+  dc:	00000593          	addi	x11,x0,0
+  e0:	0a4000ef          	jal	x1,184 <main>
+  e4:	0040006f          	jal	x0,e8 <end_of_main_handler>
 
 000000e8 <end_of_main_handler>:
-      e8:	00050413          	addi	x8,x10,0
-      ec:	f31ff06f          	jal	x0,1c <idle_handler>
+  e8:	00050413          	addi	x8,x10,0
+  ec:	f35ff06f          	jal	x0,20 <idle>
 
 000000f0 <towerOfHanoi>:
-      f0:	fe010113          	addi	x2,x2,-32
-      f4:	00112e23          	sw	x1,28(x2)
-      f8:	00812c23          	sw	x8,24(x2)
-      fc:	02010413          	addi	x8,x2,32
-     100:	fea42623          	sw	x10,-20(x8)
-     104:	00058793          	addi	x15,x11,0
-     108:	00068713          	addi	x14,x13,0
-     10c:	fef405a3          	sb	x15,-21(x8)
-     110:	00060793          	addi	x15,x12,0
-     114:	fef40523          	sb	x15,-22(x8)
-     118:	00070793          	addi	x15,x14,0
-     11c:	fef404a3          	sb	x15,-23(x8)
-     120:	fec42703          	lw	x14,-20(x8)
-     124:	00100793          	addi	x15,x0,1
-     128:	04f70463          	beq	x14,x15,170 <towerOfHanoi+0x80>
-     12c:	fec42783          	lw	x15,-20(x8)
-     130:	fff78793          	addi	x15,x15,-1
-     134:	fea44683          	lbu	x13,-22(x8)
-     138:	fe944603          	lbu	x12,-23(x8)
-     13c:	feb44703          	lbu	x14,-21(x8)
-     140:	00070593          	addi	x11,x14,0
-     144:	00078513          	addi	x10,x15,0
-     148:	fa9ff0ef          	jal	x1,f0 <towerOfHanoi>
-     14c:	fec42783          	lw	x15,-20(x8)
-     150:	fff78793          	addi	x15,x15,-1
-     154:	feb44683          	lbu	x13,-21(x8)
-     158:	fea44603          	lbu	x12,-22(x8)
-     15c:	fe944703          	lbu	x14,-23(x8)
-     160:	00070593          	addi	x11,x14,0
-     164:	00078513          	addi	x10,x15,0
-     168:	f89ff0ef          	jal	x1,f0 <towerOfHanoi>
-     16c:	0080006f          	jal	x0,174 <towerOfHanoi+0x84>
-     170:	00000013          	addi	x0,x0,0
-     174:	01c12083          	lw	x1,28(x2)
-     178:	01812403          	lw	x8,24(x2)
-     17c:	02010113          	addi	x2,x2,32
-     180:	00008067          	jalr	x0,0(x1)
+  f0:	fe010113          	addi	x2,x2,-32
+  f4:	00112e23          	sw	x1,28(x2)
+  f8:	00812c23          	sw	x8,24(x2)
+  fc:	02010413          	addi	x8,x2,32
+ 100:	fea42623          	sw	x10,-20(x8)
+ 104:	00058793          	addi	x15,x11,0
+ 108:	00068713          	addi	x14,x13,0
+ 10c:	fef405a3          	sb	x15,-21(x8)
+ 110:	00060793          	addi	x15,x12,0
+ 114:	fef40523          	sb	x15,-22(x8)
+ 118:	00070793          	addi	x15,x14,0
+ 11c:	fef404a3          	sb	x15,-23(x8)
+ 120:	fec42703          	lw	x14,-20(x8)
+ 124:	00100793          	addi	x15,x0,1
+ 128:	04f70463          	beq	x14,x15,170 <towerOfHanoi+0x80>
+ 12c:	fec42783          	lw	x15,-20(x8)
+ 130:	fff78793          	addi	x15,x15,-1
+ 134:	fea44683          	lbu	x13,-22(x8)
+ 138:	fe944603          	lbu	x12,-23(x8)
+ 13c:	feb44703          	lbu	x14,-21(x8)
+ 140:	00070593          	addi	x11,x14,0
+ 144:	00078513          	addi	x10,x15,0
+ 148:	fa9ff0ef          	jal	x1,f0 <towerOfHanoi>
+ 14c:	fec42783          	lw	x15,-20(x8)
+ 150:	fff78793          	addi	x15,x15,-1
+ 154:	feb44683          	lbu	x13,-21(x8)
+ 158:	fea44603          	lbu	x12,-22(x8)
+ 15c:	fe944703          	lbu	x14,-23(x8)
+ 160:	00070593          	addi	x11,x14,0
+ 164:	00078513          	addi	x10,x15,0
+ 168:	f89ff0ef          	jal	x1,f0 <towerOfHanoi>
+ 16c:	0080006f          	jal	x0,174 <towerOfHanoi+0x84>
+ 170:	00000013          	addi	x0,x0,0
+ 174:	01c12083          	lw	x1,28(x2)
+ 178:	01812403          	lw	x8,24(x2)
+ 17c:	02010113          	addi	x2,x2,32
+ 180:	00008067          	jalr	x0,0(x1)
 
 00000184 <main>:
-     184:	fe010113          	addi	x2,x2,-32
-     188:	00112e23          	sw	x1,28(x2)
-     18c:	00812c23          	sw	x8,24(x2)
-     190:	02010413          	addi	x8,x2,32
-     194:	00400793          	addi	x15,x0,4
-     198:	fef42623          	sw	x15,-20(x8)
-     19c:	04200693          	addi	x13,x0,66
-     1a0:	04300613          	addi	x12,x0,67
-     1a4:	04100593          	addi	x11,x0,65
-     1a8:	fec42503          	lw	x10,-20(x8)
-     1ac:	f45ff0ef          	jal	x1,f0 <towerOfHanoi>
-     1b0:	00000793          	addi	x15,x0,0
-     1b4:	00078513          	addi	x10,x15,0
-     1b8:	01c12083          	lw	x1,28(x2)
-     1bc:	01812403          	lw	x8,24(x2)
-     1c0:	02010113          	addi	x2,x2,32
-     1c4:	00008067          	jalr	x0,0(x1)
-	...
+ 184:	fe010113          	addi	x2,x2,-32
+ 188:	00112e23          	sw	x1,28(x2)
+ 18c:	00812c23          	sw	x8,24(x2)
+ 190:	02010413          	addi	x8,x2,32
+ 194:	00400793          	addi	x15,x0,4
+ 198:	fef42623          	sw	x15,-20(x8)
+ 19c:	04200693          	addi	x13,x0,66
+ 1a0:	04300613          	addi	x12,x0,67
+ 1a4:	04100593          	addi	x11,x0,65
+ 1a8:	fec42503          	lw	x10,-20(x8)
+ 1ac:	f45ff0ef          	jal	x1,f0 <towerOfHanoi>
+ 1b0:	00000793          	addi	x15,x0,0
+ 1b4:	00078513          	addi	x10,x15,0
+ 1b8:	01c12083          	lw	x1,28(x2)
+ 1bc:	01812403          	lw	x8,24(x2)
+ 1c0:	02010113          	addi	x2,x2,32
+ 1c4:	00008067          	jalr	x0,0(x1)

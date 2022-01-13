@@ -1,136 +1,143 @@
 
 /home/christians/git/RV32I-MAF-project/verif/tests/TowerOfHanoi/TowerOfHanoi.elf:     file format elf32-littleriscv
 
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001c8  00000000  00000000  00001000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .riscv.attributes 0000001c  00000000  00000000  000011c8  2**0
+                  CONTENTS, READONLY
+  2 .comment      00000012  00000000  00000000  000011e4  2**0
+                  CONTENTS, READONLY
 
 Disassembly of section .text:
 
-00000000 <idle_handler-0x1c>:
-       0:	0240006f          	j	24 <_start>
-       4:	04c0006f          	j	50 <reset_handler>
-       8:	0d00006f          	j	d8 <call_main_handler>
-       c:	0dc0006f          	j	e8 <end_of_main_handler>
-      10:	00000013          	nop
-      14:	00000013          	nop
-      18:	0040006f          	j	1c <idle_handler>
+00000000 <reserved>:
+   0:	0240006f          	j	24 <_start>
+   4:	00000013          	nop
+   8:	00000013          	nop
+   c:	00000013          	nop
+  10:	00000013          	nop
+  14:	00000013          	nop
+  18:	00000013          	nop
+  1c:	00000013          	nop
 
-0000001c <idle_handler>:
-      1c:	00000013          	nop
-      20:	ffdff06f          	j	1c <idle_handler>
+00000020 <idle>:
+  20:	0000006f          	j	20 <idle>
 
 00000024 <_start>:
-      24:	00000013          	nop
-      28:	00000013          	nop
-      2c:	00000013          	nop
-      30:	00000013          	nop
-      34:	00000013          	nop
-      38:	00000013          	nop
-      3c:	00000013          	nop
-      40:	00000013          	nop
-      44:	00000013          	nop
-      48:	00000013          	nop
-      4c:	0040006f          	j	50 <reset_handler>
+  24:	00000013          	nop
+  28:	00000013          	nop
+  2c:	00000013          	nop
+  30:	00000013          	nop
+  34:	00000013          	nop
+  38:	00000013          	nop
+  3c:	00000013          	nop
+  40:	00000013          	nop
+  44:	00000013          	nop
+  48:	00000013          	nop
+  4c:	0040006f          	j	50 <reset_handler>
 
 00000050 <reset_handler>:
-      50:	00000093          	li	ra,0
-      54:	00000113          	li	sp,0
-      58:	00000193          	li	gp,0
-      5c:	00000213          	li	tp,0
-      60:	00000293          	li	t0,0
-      64:	00000313          	li	t1,0
-      68:	00000393          	li	t2,0
-      6c:	00000413          	li	s0,0
-      70:	00000493          	li	s1,0
-      74:	00000513          	li	a0,0
-      78:	00000593          	li	a1,0
-      7c:	00000613          	li	a2,0
-      80:	00000693          	li	a3,0
-      84:	00000713          	li	a4,0
-      88:	00000793          	li	a5,0
-      8c:	00000813          	li	a6,0
-      90:	00000893          	li	a7,0
-      94:	00000913          	li	s2,0
-      98:	00000993          	li	s3,0
-      9c:	00000a13          	li	s4,0
-      a0:	00000a93          	li	s5,0
-      a4:	00000b13          	li	s6,0
-      a8:	00000b93          	li	s7,0
-      ac:	00000c13          	li	s8,0
-      b0:	00000c93          	li	s9,0
-      b4:	00000d13          	li	s10,0
-      b8:	00000d93          	li	s11,0
-      bc:	00000e13          	li	t3,0
-      c0:	00000e93          	li	t4,0
-      c4:	00000f13          	li	t5,0
-      c8:	00000f93          	li	t6,0
-      cc:	00010137          	lui	sp,0x10
-      d0:	fe010113          	addi	sp,sp,-32 # ffe0 <main+0xfe5c>
-      d4:	0040006f          	j	d8 <call_main_handler>
+  50:	00000093          	li	ra,0
+  54:	00000113          	li	sp,0
+  58:	00000193          	li	gp,0
+  5c:	00000213          	li	tp,0
+  60:	00000293          	li	t0,0
+  64:	00000313          	li	t1,0
+  68:	00000393          	li	t2,0
+  6c:	00000413          	li	s0,0
+  70:	00000493          	li	s1,0
+  74:	00000513          	li	a0,0
+  78:	00000593          	li	a1,0
+  7c:	00000613          	li	a2,0
+  80:	00000693          	li	a3,0
+  84:	00000713          	li	a4,0
+  88:	00000793          	li	a5,0
+  8c:	00000813          	li	a6,0
+  90:	00000893          	li	a7,0
+  94:	00000913          	li	s2,0
+  98:	00000993          	li	s3,0
+  9c:	00000a13          	li	s4,0
+  a0:	00000a93          	li	s5,0
+  a4:	00000b13          	li	s6,0
+  a8:	00000b93          	li	s7,0
+  ac:	00000c13          	li	s8,0
+  b0:	00000c93          	li	s9,0
+  b4:	00000d13          	li	s10,0
+  b8:	00000d93          	li	s11,0
+  bc:	00000e13          	li	t3,0
+  c0:	00000e93          	li	t4,0
+  c4:	00000f13          	li	t5,0
+  c8:	00000f93          	li	t6,0
+  cc:	00010137          	lui	sp,0x10
+  d0:	fe010113          	addi	sp,sp,-32 # ffe0 <main+0xfe5c>
+  d4:	0040006f          	j	d8 <call_main_handler>
 
 000000d8 <call_main_handler>:
-      d8:	00000513          	li	a0,0
-      dc:	00000593          	li	a1,0
-      e0:	0a4000ef          	jal	ra,184 <main>
-      e4:	0040006f          	j	e8 <end_of_main_handler>
+  d8:	00000513          	li	a0,0
+  dc:	00000593          	li	a1,0
+  e0:	0a4000ef          	jal	ra,184 <main>
+  e4:	0040006f          	j	e8 <end_of_main_handler>
 
 000000e8 <end_of_main_handler>:
-      e8:	00050413          	mv	s0,a0
-      ec:	f31ff06f          	j	1c <idle_handler>
+  e8:	00050413          	mv	s0,a0
+  ec:	f35ff06f          	j	20 <idle>
 
 000000f0 <towerOfHanoi>:
-      f0:	fe010113          	addi	sp,sp,-32
-      f4:	00112e23          	sw	ra,28(sp)
-      f8:	00812c23          	sw	s0,24(sp)
-      fc:	02010413          	addi	s0,sp,32
-     100:	fea42623          	sw	a0,-20(s0)
-     104:	00058793          	mv	a5,a1
-     108:	00068713          	mv	a4,a3
-     10c:	fef405a3          	sb	a5,-21(s0)
-     110:	00060793          	mv	a5,a2
-     114:	fef40523          	sb	a5,-22(s0)
-     118:	00070793          	mv	a5,a4
-     11c:	fef404a3          	sb	a5,-23(s0)
-     120:	fec42703          	lw	a4,-20(s0)
-     124:	00100793          	li	a5,1
-     128:	04f70463          	beq	a4,a5,170 <towerOfHanoi+0x80>
-     12c:	fec42783          	lw	a5,-20(s0)
-     130:	fff78793          	addi	a5,a5,-1
-     134:	fea44683          	lbu	a3,-22(s0)
-     138:	fe944603          	lbu	a2,-23(s0)
-     13c:	feb44703          	lbu	a4,-21(s0)
-     140:	00070593          	mv	a1,a4
-     144:	00078513          	mv	a0,a5
-     148:	fa9ff0ef          	jal	ra,f0 <towerOfHanoi>
-     14c:	fec42783          	lw	a5,-20(s0)
-     150:	fff78793          	addi	a5,a5,-1
-     154:	feb44683          	lbu	a3,-21(s0)
-     158:	fea44603          	lbu	a2,-22(s0)
-     15c:	fe944703          	lbu	a4,-23(s0)
-     160:	00070593          	mv	a1,a4
-     164:	00078513          	mv	a0,a5
-     168:	f89ff0ef          	jal	ra,f0 <towerOfHanoi>
-     16c:	0080006f          	j	174 <towerOfHanoi+0x84>
-     170:	00000013          	nop
-     174:	01c12083          	lw	ra,28(sp)
-     178:	01812403          	lw	s0,24(sp)
-     17c:	02010113          	addi	sp,sp,32
-     180:	00008067          	ret
+  f0:	fe010113          	addi	sp,sp,-32
+  f4:	00112e23          	sw	ra,28(sp)
+  f8:	00812c23          	sw	s0,24(sp)
+  fc:	02010413          	addi	s0,sp,32
+ 100:	fea42623          	sw	a0,-20(s0)
+ 104:	00058793          	mv	a5,a1
+ 108:	00068713          	mv	a4,a3
+ 10c:	fef405a3          	sb	a5,-21(s0)
+ 110:	00060793          	mv	a5,a2
+ 114:	fef40523          	sb	a5,-22(s0)
+ 118:	00070793          	mv	a5,a4
+ 11c:	fef404a3          	sb	a5,-23(s0)
+ 120:	fec42703          	lw	a4,-20(s0)
+ 124:	00100793          	li	a5,1
+ 128:	04f70463          	beq	a4,a5,170 <towerOfHanoi+0x80>
+ 12c:	fec42783          	lw	a5,-20(s0)
+ 130:	fff78793          	addi	a5,a5,-1
+ 134:	fea44683          	lbu	a3,-22(s0)
+ 138:	fe944603          	lbu	a2,-23(s0)
+ 13c:	feb44703          	lbu	a4,-21(s0)
+ 140:	00070593          	mv	a1,a4
+ 144:	00078513          	mv	a0,a5
+ 148:	fa9ff0ef          	jal	ra,f0 <towerOfHanoi>
+ 14c:	fec42783          	lw	a5,-20(s0)
+ 150:	fff78793          	addi	a5,a5,-1
+ 154:	feb44683          	lbu	a3,-21(s0)
+ 158:	fea44603          	lbu	a2,-22(s0)
+ 15c:	fe944703          	lbu	a4,-23(s0)
+ 160:	00070593          	mv	a1,a4
+ 164:	00078513          	mv	a0,a5
+ 168:	f89ff0ef          	jal	ra,f0 <towerOfHanoi>
+ 16c:	0080006f          	j	174 <towerOfHanoi+0x84>
+ 170:	00000013          	nop
+ 174:	01c12083          	lw	ra,28(sp)
+ 178:	01812403          	lw	s0,24(sp)
+ 17c:	02010113          	addi	sp,sp,32
+ 180:	00008067          	ret
 
 00000184 <main>:
-     184:	fe010113          	addi	sp,sp,-32
-     188:	00112e23          	sw	ra,28(sp)
-     18c:	00812c23          	sw	s0,24(sp)
-     190:	02010413          	addi	s0,sp,32
-     194:	00400793          	li	a5,4
-     198:	fef42623          	sw	a5,-20(s0)
-     19c:	04200693          	li	a3,66
-     1a0:	04300613          	li	a2,67
-     1a4:	04100593          	li	a1,65
-     1a8:	fec42503          	lw	a0,-20(s0)
-     1ac:	f45ff0ef          	jal	ra,f0 <towerOfHanoi>
-     1b0:	00000793          	li	a5,0
-     1b4:	00078513          	mv	a0,a5
-     1b8:	01c12083          	lw	ra,28(sp)
-     1bc:	01812403          	lw	s0,24(sp)
-     1c0:	02010113          	addi	sp,sp,32
-     1c4:	00008067          	ret
-	...
+ 184:	fe010113          	addi	sp,sp,-32
+ 188:	00112e23          	sw	ra,28(sp)
+ 18c:	00812c23          	sw	s0,24(sp)
+ 190:	02010413          	addi	s0,sp,32
+ 194:	00400793          	li	a5,4
+ 198:	fef42623          	sw	a5,-20(s0)
+ 19c:	04200693          	li	a3,66
+ 1a0:	04300613          	li	a2,67
+ 1a4:	04100593          	li	a1,65
+ 1a8:	fec42503          	lw	a0,-20(s0)
+ 1ac:	f45ff0ef          	jal	ra,f0 <towerOfHanoi>
+ 1b0:	00000793          	li	a5,0
+ 1b4:	00078513          	mv	a0,a5
+ 1b8:	01c12083          	lw	ra,28(sp)
+ 1bc:	01812403          	lw	s0,24(sp)
+ 1c0:	02010113          	addi	sp,sp,32
+ 1c4:	00008067          	ret
