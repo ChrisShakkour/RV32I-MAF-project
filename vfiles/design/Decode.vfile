@@ -3,6 +3,7 @@
 -sv ./HDL/packages/memory_pkg.sv
 
 -sv ./HDL/generic_cells/DownCounter.sv
--sv ./HDL/rtl_src/core_top/core/decode/forwarding_unit.sv
+-sv ./HDL/rtl_src/core_top/core/decode/LoadHazzardUnit.sv
+-sv ./HDL/rtl_src/core_top/core/decode/ForwardingUnit.sv
 -sv ./HDL/rtl_src/core_top/core/decode/RegisterFile.sv
 -sv ./HDL/rtl_src/core_top/core/Decode.sv

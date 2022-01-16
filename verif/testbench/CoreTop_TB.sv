@@ -49,7 +49,6 @@ module CoreTop_TB;
    logic 		  cg_clk_en;
    logic 		  gated_clk;
    logic 		  rstn;
-   logic [ADDR_W-1:0] 	  first_fetch_addr;
    logic 		  first_fetch_trigger;
    
 
@@ -110,15 +109,18 @@ module CoreTop_TB;
    always @(posedge clk iff (rstn))
      if(watchdog_expired) $stop;
 */
-   logic 		  end_of_test_addr;
-   logic 		  end_of_test_req;
+   logic [31:0] 	  decode_instruction;
+   bit 			  test_undone;
+   
+   initial begin
+      test_undone = 1'b1;      
+   end
 
-   assign end_of_test_addr = TaiLung.Core_inst.InstructionFetch_inst.inst_addr;
-   assign end_of_test_req  = TaiLung.Core_inst.InstructionFetch_inst.inst_request;
-   	 
+   assign decode_instruction = TaiLung.Core_inst.Decode_inst.instruction;
+   
    always @(posedge clk iff(rstn))
-     if(end_of_test_addr == 'h20 && end_of_test_req)
-       $stop();
+     if(decode_instruction == 'h6f)
+       test_undone <= 1'b0;
    
 /*////////////////////////////
    _____           _       
@@ -253,19 +255,22 @@ module CoreTop_TB;
       delay(SHORT_STEP); load_data_mem(LOADED_MEM_IMAGE);
       delay(LONG__STEP); open_core_clock();
       delay(LONG__STEP); cpu_go();
+
+      fork
+	 /*proccess 1 wait for end 
+	  of test trigger from core*/
+	 begin
+	    while(test_undone)
+	      @(posedge clk);
+	 end
+	 
+	 /*proccess 2 watchdog timer*/
+	 begin
+	    delay(1000);
+	 end
+      join_any
       
-      
-      delay(10); clear_watchdog(); 
-      delay(10); clear_watchdog(); 
-      delay(10); clear_watchdog();
-      
-      // load static memory
-      //
-      // stimuli
-      //
       /* end of test routine */
-      delay(1000);
-      //delay(2) dump_data_mem(STORED_MEM_IMAGE, DMEM_START_ADDR);
       delay(LONG__STEP); close_core_clock();
       delay(SHORT_STEP); stop_watchdog();
       delay(SHORT_STEP); get_mem_image(STORED_MEM_IMAGE);

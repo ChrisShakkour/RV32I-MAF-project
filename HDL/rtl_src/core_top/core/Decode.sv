@@ -20,63 +20,65 @@ module Decode
    import memory_pkg::*;
    import control_pkg::*;
    (
-    input logic 		     clk,
-    input logic 		     rstn,
+    input logic 		    clk,
+    input logic 		    rstn,
     
     // comming from inst fetch
-    input logic [XLEN-1:0] 	     instruction_in,
-    input logic [XLEN-1:0] 	     pc_in,
-    input logic [XLEN-1:0] 	     pc_pls4_in,
+    input logic [XLEN-1:0] 	    instruction_in,
+    input logic [XLEN-1:0] 	    pc_in,
+    input logic [XLEN-1:0] 	    pc_pls4_in,
     
     //###########################################
     //### DATA signals
     //###########################################
     // pc out to exe stage
-    output logic [XLEN-1:0] 	     pc,
-    output logic [XLEN-1:0] 	     pc_pls4, 
+    output logic [XLEN-1:0] 	    pc,
+    output logic [XLEN-1:0] 	    pc_pls4, 
 
-    output logic 		     ctrl_pc_stall_set,
+    output logic 		    ctrl_pc_stall_set,
 
     // going to exe stage.
-    output logic [XLEN-1:0] 	     rs1_data,
-    output logic [XLEN-1:0] 	     rs2_data,
-    output logic [MSB_REG_FILE-1:0]  rd_addr,
-    output logic [XLEN-1:0] 	     immediate,
+    output logic [XLEN-1:0] 	    rs1_data,
+    output logic [XLEN-1:0] 	    rs2_data,
+    output logic [MSB_REG_FILE-1:0] rd_addr,
+    output logic [XLEN-1:0] 	    immediate,
    
     //###########################################
     //### feedback signals
     //###########################################
     // comming from writeback stage.
-    input logic [MSB_REG_FILE-1:0]   wrb_rd_addr, //from Ps6
-    input logic 		     wrb_rd_write, //from Ps6
-    input logic [XLEN-1:0] 	     wrb_rd_data, //from Ps6
+    input logic [MSB_REG_FILE-1:0]  wrb_rd_addr, //from Ps6
+    input logic 		    wrb_rd_write, //from Ps6
+    input logic [XLEN-1:0] 	    wrb_rd_data, //from Ps6
     
     //###########################################
     //### control signals
     //###########################################
     // data mem control
-    output logic 		     ctrl_dmem_req, 
-    output logic 		     ctrl_dmem_write, 
-    output logic 		     ctrl_dmem_l_unsigned, 
-    output logic [1:0] 		     ctrl_dmem_n_bytes,
+    output logic 		    ctrl_dmem_req, 
+    output logic 		    ctrl_dmem_write, 
+    output logic 		    ctrl_dmem_l_unsigned, 
+    output logic [1:0] 		    ctrl_dmem_n_bytes,
     // alu control
-    output 			     e_alu_operation_sel ctrl_alu_op_sel,
-    output 			     e_alu_operand_a_sel ctrl_alu_a_sel, 
-    output 			     e_alu_operand_b_sel ctrl_alu_b_sel, 
+    output 			    e_alu_operation_sel ctrl_alu_op_sel,
+    output 			    e_alu_operand_a_sel ctrl_alu_a_sel, 
+    output 			    e_alu_operand_b_sel ctrl_alu_b_sel, 
     // write back to rf mux select
-    output 			     e_regfile_wb_sel ctrl_wb_to_rf_sel,
+    output 			    e_regfile_wb_sel ctrl_wb_to_rf_sel,
     // JALR set last bit to zero
-    output logic 		     set_alu_lsb_bit_zero,
+    output logic 		    set_alu_lsb_bit_zero,
     // branch compare signals
-    output logic 		     ctrl_branch_enable,
-    output 			     e_branch_operation_sel ctrl_branch_operation,
+    output logic 		    ctrl_branch_enable,
+    output 			    e_branch_operation_sel ctrl_branch_operation,
     // jump request sent to Fetch stage
-    output logic 		     ctrl_jump_request,
+    output logic 		    ctrl_jump_request,
+    // load hazzard stall non flopped
+    output logic 		    load_hazzard_stall, 
     
-    output logic 		     ctrl_reg_wr,
+    output logic 		    ctrl_reg_wr,
 
-    output                           e_data_hazard aluin1_hazard_sel_o,
-    output 	   	             e_data_hazard aluin2_hazard_sel_o    
+    output 			    e_data_hazard aluin1_hazard_sel_o,
+    output 			    e_data_hazard aluin2_hazard_sel_o    
     );
 
 
@@ -104,7 +106,6 @@ module Decode
    
    
    logic 			    set_alu_lsb_bit_zero_nxt;
-   logic 			    sel_next_pc;
    logic 			    ctrl_lui_inst_nxt;
    logic 			    ctrl_reg_wr_nxt;  
    // dmem control logic
@@ -118,7 +119,13 @@ module Decode
    e_branch_operation_sel           ctrl_branch_operation_nxt;
 
    logic 			    ctrl_jump_request_nxt;
-   
+
+   logic 			    nop;
+   logic 			    load_hazzard_nop;
+
+   logic [1:0] 			    rsx_load_hazzard_cmp_en;
+   logic [1:0] 			    rsx_load_hazzard_cmp_en_nxt;   
+     
    logic 			    nop_sel;
    logic 			    nop_set;
    logic [NOP_CNT_WIDTH-1:0] 	    nop_count;
@@ -159,9 +166,11 @@ module Decode
       .status (nop_sel)
       );
 
+   assign nop = nop_sel | load_hazzard_nop;
+   
    always_comb
-     if(nop_sel) instruction = NOP;
-     else        instruction = instruction_in;
+     if(nop) instruction = NOP;
+     else    instruction = instruction_in;
    
    
 /*///////////////////////////////////////////////////////
@@ -189,21 +198,37 @@ module Decode
 	);
 
 
-
-//Forwarding
-    ForwardingUnit
-	ForwardingUnit_inst
-	(
+   
+   //Forwarding
+   ForwardingUnit
+     ForwardingUnit_inst
+       (
 	.clk               (clk),
         .rs1               (rs1_addr),
         .rs2               (rs2_addr),
         .rd                (rd_addr_nxt),
 	.rd_wr             (ctrl_reg_wr_nxt),
-                                            
+       
 	.aluin1_hazard_sel (aluin1_hazard_sel),	
         .aluin2_hazard_sel (aluin2_hazard_sel)
 	);
 
+   
+   
+   LoadHazzardUnit
+     LoadHazzardUnit_inst
+       (
+	.load_req           (ctrl_dmem_req),
+   	.load_enable        (~ctrl_dmem_write),
+	.rd                 (rd_addr),
+	.rsx_active         (rsx_load_hazzard_cmp_en), 
+	.rs1                (instruction_in[19:15]),
+	.rs2                (instruction_in[24:20]),
+	.load_hazzard_stall (load_hazzard_stall),
+	.nop_req            (load_hazzard_nop)
+	);
+
+   
 /*/////////////////////////////////////////////////////////
    ___                    _              ___  ___  __  __ 
   |   \  ___  __  ___  __| | ___   ___  | __|/ __||  \/  |
@@ -233,10 +258,7 @@ module Decode
       
       // immediate value
       immediate_nxt = '0;
-            
-      // goes to pc mux, select 
-      // pc+4 or alu data out.
-      sel_next_pc       = 1'b0; 
+             
       ctrl_wb_to_rf_sel_nxt    = WB_ALU_OUT;
       
       // registerfile write enable
@@ -253,6 +275,9 @@ module Decode
 
       // pc stall control signals
       ctrl_pc_stall_set_nxt = 1'b0;
+
+      // activate rs1/2 load hazzard comparison 
+      rsx_load_hazzard_cmp_en_nxt = 2'b11;
       
       
       unique case(opcode)
@@ -344,16 +369,17 @@ module Decode
 	/*addr = rs1 + immediate*/
 	/*store data of addr into rd*/
 	LOAD: begin
-	   ctrl_reg_wr_nxt          = 1'b1;	   
-	   ctrl_alu_op_sel_nxt      = ALU_ADD;
-	   ctrl_alu_a_sel_nxt       = ALU_RS1;
-	   ctrl_alu_b_sel_nxt       = ALU_IMM;
-	   ctrl_wb_to_rf_sel_nxt    = WB_MEM_LOAD;
-	   ctrl_dmem_req_nxt        = 1'b1; 
-	   ctrl_dmem_write_nxt      = 1'b0;
-	   ctrl_dmem_l_unsigned_nxt = 1'b0; 
-	   immediate_nxt            = {{20{instruction[31]}},
-				       instruction[31:20]};
+	   rsx_load_hazzard_cmp_en_nxt = 2'b01; //rs1 only
+	   ctrl_reg_wr_nxt             = 1'b1;	   
+	   ctrl_alu_op_sel_nxt         = ALU_ADD;
+	   ctrl_alu_a_sel_nxt          = ALU_RS1;
+	   ctrl_alu_b_sel_nxt          = ALU_IMM;
+	   ctrl_wb_to_rf_sel_nxt       = WB_MEM_LOAD;
+	   ctrl_dmem_req_nxt           = 1'b1; 
+	   ctrl_dmem_write_nxt         = 1'b0;
+	   ctrl_dmem_l_unsigned_nxt    = 1'b0; 
+	   immediate_nxt               = {{20{instruction[31]}},
+					  instruction[31:20]};
 	   unique case(funct3)
 	     LW:
 	       ctrl_dmem_n_bytes_nxt = WORD;
@@ -379,13 +405,14 @@ module Decode
 	 SLLI, SRLI, SRAI*/
 	/* rs1 {op} imm stored in rd*/
 	IMM: begin
-	   ctrl_wb_to_rf_sel_nxt = WB_ALU_OUT;
-	   sel_next_pc        = 1'b0; 
-	   ctrl_reg_wr_nxt    = 1'b1;
-	   ctrl_alu_a_sel_nxt = ALU_RS1;
-	   ctrl_alu_b_sel_nxt = ALU_IMM; 
-	   immediate_nxt      = {{20{instruction[31]}},
-				 instruction[31:20]};
+	   rsx_load_hazzard_cmp_en_nxt = 2'b01;
+	   ctrl_wb_to_rf_sel_nxt       = WB_ALU_OUT;
+	   ctrl_reg_wr_nxt             = 1'b1;
+	   ctrl_alu_a_sel_nxt          = ALU_RS1;
+	   ctrl_alu_b_sel_nxt          = ALU_IMM; 
+	   immediate_nxt               = {{20{instruction[31]}},
+					  instruction[31:20]};
+	   
 	   unique case(funct3)
 	     ADDI:
 	       ctrl_alu_op_sel_nxt = ALU_ADD;
@@ -419,17 +446,18 @@ module Decode
 	/*rd data = pc+4 */
 	JALR: begin
 	   if(funct3 == 3'b000) begin
-	      nop_set                  = 1'b1;
-	      nop_count                = 2;
-	      ctrl_jump_request_nxt    = 1'b1;
-	      ctrl_wb_to_rf_sel_nxt    = WB_PC_PLS4;
-	      ctrl_reg_wr_nxt          = 1'b1;
-	      ctrl_alu_op_sel_nxt      = ALU_ADD;
-	      ctrl_alu_a_sel_nxt       = ALU_RS1;
-	      ctrl_alu_b_sel_nxt       = ALU_IMM; 
-	      set_alu_lsb_bit_zero_nxt = 1'b1;
-	      immediate_nxt            = {{20{instruction[31]}},
-					  instruction[31:20]};
+	      rsx_load_hazzard_cmp_en_nxt = 2'b01;
+	      nop_set                     = 1'b1;
+	      nop_count                   = 2;
+	      ctrl_jump_request_nxt       = 1'b1;
+	      ctrl_wb_to_rf_sel_nxt       = WB_PC_PLS4;
+	      ctrl_reg_wr_nxt             = 1'b1;
+	      ctrl_alu_op_sel_nxt         = ALU_ADD;
+	      ctrl_alu_a_sel_nxt          = ALU_RS1;
+	      ctrl_alu_b_sel_nxt          = ALU_IMM; 
+	      set_alu_lsb_bit_zero_nxt    = 1'b1;
+	      immediate_nxt               = {{20{instruction[31]}},
+					     instruction[31:20]};
 	   end
 	end
 	
@@ -445,12 +473,13 @@ module Decode
 	/*Loads upper immediate value 
 	 paded with zeros into rd*/
 	LUI: begin
-	   ctrl_reg_wr_nxt       = 1'b1;
-	   ctrl_wb_to_rf_sel_nxt = WB_ALU_OUT;
-	   ctrl_alu_op_sel_nxt   = ALU_ADD;
-	   ctrl_alu_a_sel_nxt    = ALU_ZERO;
-	   ctrl_alu_b_sel_nxt    = ALU_IMM; 
-	   immediate_nxt         = {instruction[31:12],12'b0};
+	   rsx_load_hazzard_cmp_en_nxt = 2'b00;
+	   ctrl_reg_wr_nxt             = 1'b1;
+	   ctrl_wb_to_rf_sel_nxt       = WB_ALU_OUT;
+	   ctrl_alu_op_sel_nxt         = ALU_ADD;
+	   ctrl_alu_a_sel_nxt          = ALU_ZERO;
+	   ctrl_alu_b_sel_nxt          = ALU_IMM; 
+	   immediate_nxt               = {instruction[31:12],12'b0};
 	end
 
 	
@@ -459,12 +488,13 @@ module Decode
 	 paded with zeros with PC 
 	 stored into rd register*/
 	AUIPC: begin
-	   ctrl_reg_wr_nxt       = 1'b1;
-	   ctrl_wb_to_rf_sel_nxt = WB_ALU_OUT;
-	   ctrl_alu_op_sel_nxt   = ALU_ADD;
-	   ctrl_alu_a_sel_nxt    = ALU_PC;
-	   ctrl_alu_b_sel_nxt    = ALU_IMM; 
-	   immediate_nxt         = {instruction[31:12],12'b0};
+	   rsx_load_hazzard_cmp_en_nxt = 2'b00;
+	   ctrl_reg_wr_nxt             = 1'b1;
+	   ctrl_wb_to_rf_sel_nxt       = WB_ALU_OUT;
+	   ctrl_alu_op_sel_nxt         = ALU_ADD;
+	   ctrl_alu_a_sel_nxt          = ALU_PC;
+	   ctrl_alu_b_sel_nxt          = ALU_IMM; 
+	   immediate_nxt               = {instruction[31:12],12'b0};
 	end
 	
 /*//////////////////////////////////////
@@ -479,18 +509,19 @@ module Decode
 	/*stores pc+4 in rd register*/
 	/*updates pc to pc + (sign extended immediate)*/
 	JAL: begin
-	   nop_set                 = 1'b1;
-	   nop_count               = 2;   
-	   ctrl_jump_request_nxt   = 1'b1;
-	   ctrl_reg_wr_nxt         = 1'b1;
-	   ctrl_wb_to_rf_sel_nxt   = WB_PC_PLS4;
-	   ctrl_alu_op_sel_nxt     = ALU_ADD;
-	   ctrl_alu_a_sel_nxt      = ALU_PC;
-	   ctrl_alu_b_sel_nxt      = ALU_IMM; 
-	   immediate_nxt           = {{12{instruction[31]}},
-				      instruction[19:12],
-				      instruction[20],
-				      instruction[30:21],1'b0};
+	   rsx_load_hazzard_cmp_en_nxt = 2'b00;
+	   nop_set                     = 1'b1;
+	   nop_count                   = 2;   
+	   ctrl_jump_request_nxt       = 1'b1;
+	   ctrl_reg_wr_nxt             = 1'b1;
+	   ctrl_wb_to_rf_sel_nxt       = WB_PC_PLS4;
+	   ctrl_alu_op_sel_nxt         = ALU_ADD;
+	   ctrl_alu_a_sel_nxt          = ALU_PC;
+	   ctrl_alu_b_sel_nxt          = ALU_IMM; 
+	   immediate_nxt               = {{12{instruction[31]}},
+					  instruction[19:12],
+					  instruction[20],
+					  instruction[30:21],1'b0};
 	end
 
 /*/////////////////////////////////////
@@ -545,15 +576,15 @@ module Decode
 	/*store addr = rs1 + immediate*/
 	/*store rs2 data into calculated addr*/
 	STORE: begin
-	   ctrl_alu_op_sel_nxt = ALU_ADD;
-	   ctrl_alu_a_sel_nxt  = ALU_RS1;
-	   ctrl_alu_b_sel_nxt  = ALU_IMM; 
+	   ctrl_alu_op_sel_nxt      = ALU_ADD;
+	   ctrl_alu_a_sel_nxt       = ALU_RS1;
+	   ctrl_alu_b_sel_nxt       = ALU_IMM; 
 	   ctrl_dmem_req_nxt        = 1'b1; 
 	   ctrl_dmem_write_nxt      = 1'b1;
 	   ctrl_dmem_l_unsigned_nxt = 1'b0; 
-	   immediate_nxt       = {{20{instruction[31]}},
-				  instruction[31:25],
-				  instruction[11:7]};
+	   immediate_nxt            = {{20{instruction[31]}},
+				       instruction[31:25],
+				       instruction[11:7]};
 	   unique case(funct3)
 	     SW: 
 	       ctrl_dmem_n_bytes_nxt = WORD;
@@ -653,6 +684,9 @@ module Decode
       end
    end
 
+   always_ff @(posedge clk or negedge rstn)
+     if (~rstn) rsx_load_hazzard_cmp_en <= 2'b00;
+     else       rsx_load_hazzard_cmp_en <= rsx_load_hazzard_cmp_en_nxt;
    
 /*///////////////////////
    ___    _  _____  _                        
