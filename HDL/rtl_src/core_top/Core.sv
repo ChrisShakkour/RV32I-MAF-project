@@ -92,6 +92,9 @@ module Core
    // jump request logic
    logic 		    dec_jump_request;
    logic 		    exe_jump_request;
+
+   // load hazzard stall request
+   logic 		    load_hazzard_stall;
    
    // exe input data
    logic [XLEN-1:0] 	    immediate;
@@ -134,7 +137,7 @@ module Core
 	
 	// pc stall signals
 	.pc_stall_set        (dec_ctrl_pc_stall_set),
-	.load_hazzard_stall  (1'b0),
+	.load_hazzard_stall  (load_hazzard_stall),
 	
 	// comming from execution stage
 	.branch_result       (exe_branch_result),
@@ -202,6 +205,9 @@ module Core
 	// JALR sel last bit to zero
 	.set_alu_lsb_bit_zero  (set_alu_lsb_bit_zero),
 
+	// load hazzard
+	.load_hazzard_stall    (load_hazzard_stall),
+	
 	// write back control signals
         .ctrl_reg_wr           (ctrl_reg_wr_ps3),
 
