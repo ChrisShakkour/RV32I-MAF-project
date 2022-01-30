@@ -8,15 +8,13 @@
 `timescale 1ns/1ns
 
 module CoreTop_TB;
-   //import CoreTop_verif_pkg::*;
 
    //################################
    /* Paths set in the sim command */
    parameter string LOADED_MEM_IMAGE;
    parameter string STORED_MEM_IMAGE;
    //################################
-   
-   parameter FIRST_FETCH_ADDR = 0;
+   localparam integer CYCLE_CNT_W=32;
    
    parameter IMEM_START_ADDR = 0;
    parameter IMEM_SIZE       = memory_pkg::IMEM_BYTES;
@@ -50,7 +48,8 @@ module CoreTop_TB;
    logic 		  gated_clk;
    logic 		  rstn;
    logic 		  first_fetch_trigger;
-   
+
+   logic [CYCLE_CNT_W-1:0] cycle_count;
 
    /* tb free running clock control */
    always #HALFCLK clk = (tb_clk_en) ? ~clk : 1'b0;
@@ -148,6 +147,7 @@ module CoreTop_TB;
    endtask // init
 
    task cpu_go();
+      $display("-I- time=%0t[ns]: CPU GO initiated\n", $time);
       first_fetch_trigger=1'b1;
       delay(1);
       first_fetch_trigger=1'b0;
@@ -225,18 +225,44 @@ module CoreTop_TB;
    endtask // get_mem_image
 
 
-   //#################
-   /* DISPLAY TASKS */
-   //#################
+ /*///////////////////////////////////////////
+    _____                _                 
+   |_   _|_ _  __ _  __ | |__ ___  _ _  ___
+     | | | '_|/ _` |/ _|| / // -_)| '_|(_-<
+     |_| |_|  \__,_|\__||_\_\\___||_|  /__/
+                                              
+  *///////////////////////////////////////////
+
+`ifndef TRACKERS_OFF
+   
+   Trackers 
+     #(.CYCLE_CNT_W(CYCLE_CNT_W))
+   Trackers_inst
+     (
+      .trigger       (first_fetch_trigger),
+      .test_undone   (test_undone),
+      .cycle_count   (cycle_count),
+      .enable        (cg_clk_en)
+      );
+`else
+`endif
 
    
+   UpCounter
+     #(.INCREMENT_RATE(1),
+       .WIDTH(CYCLE_CNT_W)
+       )
+   cycle_counter
+     (
+      .clk       (gated_clk),
+      .rstn      (rstn),
+      .en        (cg_clk_en),
+      .clear     (1'b0),
+      .overflow  (),
+      .count_val (cycle_count)
+      );
 
    
-   /* to be built in verif package
-    task display_instructions
-    task display_verbose    
-    */
-
  /*/////////////////////////////////
     ___  _    _              _  _ 
    / __|| |_ (_) _ __  _  _ | |(_)
@@ -246,7 +272,8 @@ module CoreTop_TB;
 *///////////////////////////////////
    
    initial begin
-      // print start of test settings
+      $display("\n################################################\n");
+      $display("-I- time=%0t[ns]: STARTING STIMULI \n", $time);
       delay(SHORT_STEP); init();
       delay(SHORT_STEP); reset();
       delay(SHORT_STEP); open_main_clock();
@@ -266,7 +293,7 @@ module CoreTop_TB;
 	 
 	 /*proccess 2 watchdog timer*/
 	 begin
-	    delay(1000);
+	    delay(5000);
 	 end
       join_any
       
@@ -275,6 +302,7 @@ module CoreTop_TB;
       delay(SHORT_STEP); stop_watchdog();
       delay(SHORT_STEP); get_mem_image(STORED_MEM_IMAGE);
       delay(SHORT_STEP); close_main_clock();
+      $display("\n################################################\n");
       delay(LONG__STEP); $finish;
    end
   

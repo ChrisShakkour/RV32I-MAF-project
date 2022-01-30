@@ -1,0 +1,4 @@
+-sv ./verif/trackers/DecodedInstruction_trk.sv
+-sv ./verif/trackers/DataMemTrans_trk.sv
+
+-sv ./verif/trackers/Trackers.sv

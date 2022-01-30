@@ -21,7 +21,7 @@ import os
 import sys
 
 
-cmd='vsim.exe -Ldir "{}" {} -t 1ns -G LOADED_MEM_IMAGE="{}" -G STORED_MEM_IMAGE="{}" {} -do "run -all" -l {} -suppress 3584,8233,3408,3412'
+cmd='vsim.exe -Ldir "{}" {} -t 1ns -G LOADED_MEM_IMAGE="{}" -G STORED_MEM_IMAGE="{}" {} -do "run -all" -l {} -suppress 8315,3584,8233,3408,3412'
 
 inst      = "work.{}"
 gui       = "-gui"
