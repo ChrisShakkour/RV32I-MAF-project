@@ -24,5 +24,5 @@ int main(void) {
   int n = sizeof(array) / sizeof(array[0]);
   int x = 4;
   
-  return result = binarySearch(array, x, 0, n - 1);
+  return binarySearch(array, x, 0, n - 1);
 }

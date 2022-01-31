@@ -208,14 +208,13 @@ module CoreTop_TB;
    task load_instruction_mem;
       input string mem_file;
       $display("-I- time=%0t[ns]: Loading instruction memory from file: %s\n", $time, mem_file);
-      $readmemh(mem_file, TaiLung.Memory_inst.instruction_memory.imem_ram, IMEM_START_ADDR, IMEM_SIZE-1);
+      $readmemh(mem_file, TaiLung.Memory_inst.instruction_memory.imem_ram, IMEM_START_ADDR, IMEM_SIZE-1); //0:16383
    endtask // load_instruction_mem
 
    task load_data_mem;
       input string mem_file;
       $display("-I- time=%0t[ns]: Loading data memory from file: %s\n", $time, mem_file);
-//      $readmemh(mem_file, TaiLung.Memory_inst.data_memory.dmem_ram, DMEM_START_ADDR, DMEM_START_ADDR+DMEM_SIZE-1);//16384:65535
-      $readmemh(mem_file, TaiLung.Memory_inst.data_memory.dmem_ram, 16384, 65535);//16384:65535
+      $readmemh(mem_file, TaiLung.Memory_inst.data_memory.dmem_ram, DMEM_START_ADDR, DMEM_START_ADDR+DMEM_SIZE-1); //16384:65535
    endtask // load_data_mem
 
    task get_mem_image;
@@ -278,8 +277,8 @@ module CoreTop_TB;
       delay(SHORT_STEP); reset();
       delay(SHORT_STEP); open_main_clock();
       delay(SHORT_STEP); start_watchdog();
-      delay(SHORT_STEP); load_instruction_mem(LOADED_MEM_IMAGE);
-      delay(SHORT_STEP); load_data_mem(LOADED_MEM_IMAGE);
+      delay(SHORT_STEP); load_instruction_mem({LOADED_MEM_IMAGE, ".I"});
+      delay(SHORT_STEP); load_data_mem({LOADED_MEM_IMAGE, ".D"});
       delay(LONG__STEP); open_core_clock();
       delay(LONG__STEP); cpu_go();
 
@@ -300,7 +299,7 @@ module CoreTop_TB;
       /* end of test routine */
       delay(LONG__STEP); close_core_clock();
       delay(SHORT_STEP); stop_watchdog();
-      delay(SHORT_STEP); get_mem_image(STORED_MEM_IMAGE);
+      delay(SHORT_STEP); get_mem_image({STORED_MEM_IMAGE, ".D"});
       delay(SHORT_STEP); close_main_clock();
       $display("\n################################################\n");
       delay(LONG__STEP); $finish;

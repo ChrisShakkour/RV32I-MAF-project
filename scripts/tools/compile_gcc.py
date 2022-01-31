@@ -12,6 +12,7 @@ riscv32-unknown-elf-gcc -S test.c -march=rv32i -mabi=ilp32
 riscv32-unknown-elf-gcc -c test.s -march=rv32i -mabi=ilp32 -T $LINKER -o test.elf
 riscv32-unknown-elf-objdump -gd test.elf > test.txt -Mno-aliases
 riscv32-unknown-elf-objcopy --srec-len 1 --output-target=verilog test.elf test.sv
+--gap-fill 0 --pad-to 0xFFFF --verilog-data-width 1
 '''
 
 import argparse
@@ -23,7 +24,10 @@ c_2_asm   = 'riscv32-unknown-elf-gcc -S {} -ffreestanding -march={} -mabi={} -o 
 asm_2_elf = 'riscv32-unknown-elf-gcc -O3 -nostartfiles -D__riscv_ $CRT0 {} -march={} -mabi={} -T {} -o {}'  
 elf_2_txt = 'riscv32-unknown-elf-objdump -d -h {} > {}'
 elf_2_txt_mono = elf_2_txt+" -Mno-aliases -M numeric"
-elf_2_mem = 'riscv32-unknown-elf-objcopy --srec-len 1 --output-target=verilog {} {}' 
+elf_2_imem = 'riscv32-unknown-elf-objcopy --only-section .text --srec-len 1 --output-target=verilog {} {}' 
+elf_2_dmem = 'riscv32-unknown-elf-objcopy --remove-section .text --srec-len 1 --output-target=verilog {} {}' 
+
+#elf_2_HEX = 'riscv32-unknown-elf-objcopy --srec-len 2 -byte 2 -O ihex {} {}' 
 
 
 '''
@@ -163,9 +167,12 @@ def gen_txt_mono(elf_file, dest):
 run generate memory
 image, .mem file
 '''
-def gen_mem(elf_file, dest):
+def gen_mem(elf_file, dest, typ):
     print('\ngenerating memory file...')
-    cmd=elf_2_mem.format(elf_file, dest)
+    if(typ=="I"):
+        cmd=elf_2_imem.format(elf_file, dest)
+    else:
+        cmd=elf_2_dmem.format(elf_file, dest)
     print('command : %s' %(cmd))
     os.system(cmd)
     return 0
@@ -198,7 +205,8 @@ def main():
         gen_txt(dest_realpath+'.elf', dest_realpath+'.txt')
         gen_txt_mono(dest_realpath+'.elf', dest_realpath+'.txt.mono')
     if args.mem:
-        gen_mem(dest_realpath+'.elf', dest_realpath+'.mem')
+        gen_mem(dest_realpath+'.elf', dest_realpath+'.mem.I', "I")
+        gen_mem(dest_realpath+'.elf', dest_realpath+'.mem.D', "D")
         
     
         
