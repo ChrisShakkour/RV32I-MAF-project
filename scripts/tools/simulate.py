@@ -21,7 +21,7 @@ import os
 import sys
 
 
-cmd='vsim.exe -Ldir "{}" {} -t 1ns -G LOADED_MEM_IMAGE="{}" -G STORED_MEM_IMAGE="{}" {} -do "run -all" -l {}'
+cmd='vsim.exe -Ldir "{}" {} -t 1ns -G LOADED_MEM_IMAGE="{}" -G STORED_MEM_IMAGE="{}" {} -do "run -all" -l {} -suppress 8315,3584,8233,3408'
 
 inst      = "work.{}"
 gui       = "-gui"
@@ -91,6 +91,9 @@ def main():
 
     if(not dir_exist(os.path.expandvars(sim))):
         os.system("mkdir {}".format(sim))
+
+    if(not dir_exist(os.path.expandvars(sim+'/trackers'))):
+        os.system("mkdir {}".format(sim+'/trackers'))
 
     lib_=reverse_backslash(os.path.expandvars(lib))
     inst_=inst.format(args.top)
