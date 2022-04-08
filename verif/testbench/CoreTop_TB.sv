@@ -46,6 +46,9 @@ module CoreTop_TB;
    localparam PERIOD=(2*HALFCLK);
    localparam SHORT_STEP=4;
    localparam LONG__STEP=10;
+
+   /* used for end of test checkers*/
+   int 		      status; 
    
    /* env signals*/
    logic [WATCHDOG_W-1:0] watchdog_counter; 
@@ -232,22 +235,34 @@ module CoreTop_TB;
    
    task load_instruction_mem;
       input string mem_file;
-      print({"Loading instruction memory from file: ", mem_file});
+      print({"Loading instruction memory from file:\n", mem_file});
       $readmemh(mem_file, `IMEM_PATH, IMEM_START_ADDR, IMEM_SIZE-1);
    endtask // load_instruction_mem
 
    task load_data_mem;
       input string mem_file;
-      print({"Loading data memory from file: ", mem_file});
+      print({"Loading data memory from file:\n", mem_file});
       $readmemh(mem_file, `DMEM_PATH, DMEM_START_ADDR, DMEM_END_ADDR);
    endtask // load_data_mem
 
    task get_mem_image;
       input string mem_file;
-      print({"Storing data memory to file: ", mem_file});
+      print({"Storing data memory to file:\n", mem_file});
       $writememh(mem_file, `DMEM_PATH, DMEM_START_ADDR, DMEM_END_ADDR);
    endtask // get_mem_image
 
+   
+   //#####################
+   /* END OF TEST TASKS */
+   //#####################
+
+   task get_regfile_reg;
+      input logic [4:0] index;
+      output int 	value;
+      value = TaiLung.Core_inst.Decode_inst.RegisterFile_inst.internal_regs[index];
+   endtask // get_regfile_reg
+   
+     
 
  /*///////////////////////////////////////////
     _____                _                 
@@ -294,6 +309,7 @@ module CoreTop_TB;
    |___/ \__||_||_|_|_|\_,_||_||_|
                                   
 *///////////////////////////////////
+
    
    initial begin
       $display("\n################################################\n");
@@ -314,11 +330,19 @@ module CoreTop_TB;
 	    while(test_undone)
 	      @(posedge clk);
 	    print("CPU Done Execution");
+	    
+	    // exit status.
+	    get_regfile_reg(10, status);
+	    print($sformatf("Exit status: %0d", status));
+	    
+	    // stack pointer.
+	    get_regfile_reg(2, status);
+	    print($sformatf("Stack pointer: 0x%x", status));
 	 end
 	 
 	 /*proccess 2 watchdog timer*/
 	 begin
-	    delay(5000);
+	    delay(50000); //cycles
 	    print("Watchdog timer expired, Ending test");
 	 end
       join_any
