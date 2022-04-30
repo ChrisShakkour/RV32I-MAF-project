@@ -1,11 +1,24 @@
-/*
+/*///////////////////////////////////////////////////////////////////
  
+ -> Block owner: Chris Shakkour - chrisshakkour@gmail.com
+ -> Contributers: Shahar Dror -  
+
+ -> Description: Core testbench
+                 
+ -> features:
  
- 
- 
- */
+ -> module:
+   _____          _    ___                 _    
+  |_   _|___  ___| |_ | _ ) ___  _ _   __ | |_  
+    | | / -_)(_-<|  _|| _ \/ -_)| ' \ / _|| ' \ 
+    |_| \___|/__/ \__||___/\___||_||_|\__||_||_|
+
+ /*///////////////////////////////////////////////////////////////////
 
 `timescale 1ns/1ns
+
+`define IMEM_PATH TaiLung.Memory_inst.instruction_memory.imem_ram 
+`define DMEM_PATH TaiLung.Memory_inst.data_memory.dmem_ram
 
 module CoreTop_TB;
 
@@ -20,6 +33,7 @@ module CoreTop_TB;
    parameter IMEM_SIZE       = memory_pkg::IMEM_BYTES;
    parameter DMEM_START_ADDR = memory_pkg::IMEM_BYTES;
    parameter DMEM_SIZE       = memory_pkg::DMEM_BYTES;
+   parameter DMEM_END_ADDR   = DMEM_START_ADDR+DMEM_SIZE-1;
    parameter ADDR_W          = memory_pkg::MEM_ADDR_WIDTH;  
    
    
@@ -32,6 +46,9 @@ module CoreTop_TB;
    localparam PERIOD=(2*HALFCLK);
    localparam SHORT_STEP=4;
    localparam LONG__STEP=10;
+
+   /* used for end of test checkers*/
+   int 		      status; 
    
    /* env signals*/
    logic [WATCHDOG_W-1:0] watchdog_counter; 
@@ -133,6 +150,11 @@ module CoreTop_TB;
       #(cycles*PERIOD);
    endtask // delay
 
+   task print(string str);
+      $display("-I- time=%0t[ns]: %s\n",
+	       $time, str);
+   endtask // printTerminal
+   
    task init();
       /* clock domain*/
       clk       = 1'b0;
@@ -147,7 +169,7 @@ module CoreTop_TB;
    endtask // init
 
    task cpu_go();
-      $display("-I- time=%0t[ns]: CPU GO initiated\n", $time);
+      print("CPU GO initiated");
       first_fetch_trigger=1'b1;
       delay(1);
       first_fetch_trigger=1'b0;
@@ -155,11 +177,13 @@ module CoreTop_TB;
    
    
    task reset();
+      print("Reset initiated");
       rstn=1'b0;
       delay(LONG__STEP);
       rstn=1'b1;
+      print("Out of Reset");
    endtask // reset
-
+   
    
    //###############
    /* CLOCK TASKS */
@@ -167,18 +191,22 @@ module CoreTop_TB;
    
    task open_main_clock();
       tb_clk_en = 1'b1;
+      print("Tb clock started");
    endtask // open_main_clock
    
    task close_main_clock();
       tb_clk_en = 1'b0;
+      print("Tb clock stopped");
    endtask // close_main_clock
    
    task open_core_clock();
       cg_clk_en = 1'b1;
+      print("Core clock started");
    endtask // open_core_clock
 
    task close_core_clock();
       cg_clk_en = 1'b0;
+      print("Core clock stopped");
    endtask // close_core_clock
 
    
@@ -207,22 +235,34 @@ module CoreTop_TB;
    
    task load_instruction_mem;
       input string mem_file;
-      $display("-I- time=%0t[ns]: Loading instruction memory from file: %s\n", $time, mem_file);
-      $readmemh(mem_file, TaiLung.Memory_inst.instruction_memory.imem_ram, IMEM_START_ADDR, IMEM_SIZE-1); //0:16383
+      print({"Loading instruction memory from file:\n", mem_file});
+      $readmemh(mem_file, `IMEM_PATH, IMEM_START_ADDR, IMEM_SIZE-1);
    endtask // load_instruction_mem
 
    task load_data_mem;
       input string mem_file;
-      $display("-I- time=%0t[ns]: Loading data memory from file: %s\n", $time, mem_file);
-      $readmemh(mem_file, TaiLung.Memory_inst.data_memory.dmem_ram, DMEM_START_ADDR, DMEM_START_ADDR+DMEM_SIZE-1); //16384:65535
+      print({"Loading data memory from file:\n", mem_file});
+      $readmemh(mem_file, `DMEM_PATH, DMEM_START_ADDR, DMEM_END_ADDR);
    endtask // load_data_mem
 
    task get_mem_image;
       input string mem_file;
-      $display("-I- time=%0t[ns]: Storing data memory to file: %s\n", $time, mem_file);
-      $writememh(mem_file, TaiLung.Memory_inst.data_memory.dmem_ram, DMEM_START_ADDR, DMEM_START_ADDR+DMEM_SIZE-1);
+      print({"Storing data memory to file:\n", mem_file});
+      $writememh(mem_file, `DMEM_PATH, DMEM_START_ADDR, DMEM_END_ADDR);
    endtask // get_mem_image
 
+   
+   //#####################
+   /* END OF TEST TASKS */
+   //#####################
+
+   task get_regfile_reg;
+      input logic [4:0] index;
+      output int 	value;
+      value = TaiLung.Core_inst.Decode_inst.RegisterFile_inst.internal_regs[index];
+   endtask // get_regfile_reg
+   
+     
 
  /*///////////////////////////////////////////
     _____                _                 
@@ -269,6 +309,7 @@ module CoreTop_TB;
    |___/ \__||_||_|_|_|\_,_||_||_|
                                   
 *///////////////////////////////////
+
    
    initial begin
       $display("\n################################################\n");
@@ -288,11 +329,21 @@ module CoreTop_TB;
 	 begin
 	    while(test_undone)
 	      @(posedge clk);
+	    print("CPU Done Execution");
+	    
+	    // exit status.
+	    get_regfile_reg(10, status);
+	    print($sformatf("Exit status: %0d", status));
+	    
+	    // stack pointer.
+	    get_regfile_reg(2, status);
+	    print($sformatf("Stack pointer: 0x%x", status));
 	 end
 	 
 	 /*proccess 2 watchdog timer*/
 	 begin
-	    delay(5000);
+	    delay(50000); //cycles
+	    print("Watchdog timer expired, Ending test");
 	 end
       join_any
       

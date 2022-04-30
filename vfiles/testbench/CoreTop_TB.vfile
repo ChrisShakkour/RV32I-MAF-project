@@ -2,6 +2,4 @@
 -f ./vfiles/design/generic_cells.vfile
 -f ./vfiles/design/Trackers.vfile
 
-
--sv ./verif/trackers/inst_pipe.sv
 -sv ./verif/testbench/CoreTop_TB.sv

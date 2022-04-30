@@ -1,1 +1,11 @@
+
+# ignore Output directory.
 OUTPUT/
+
+# ignore all files in tests
+# directory except c code.
+verif/tests/*/*
+!verif/tests/*/*.c
+
+# ignore waves file. 
+*.wlf

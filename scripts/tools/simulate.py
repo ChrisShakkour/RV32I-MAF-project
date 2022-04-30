@@ -100,11 +100,11 @@ def main():
     sMemPath_ = reverse_backslash(os.path.expandvars(sMemPath.format(args.top)))
     
     path=lMemPath.format(args.test+"/"+args.test)
-    if(not path_exists(os.path.expandvars(path))):
+    if(not path_exists(os.path.expandvars(path+".I"))):
         path=lMemPath.format("ISA_tests/"+args.test)        
-    if(not path_exists(os.path.expandvars(path))):
-        print('-E- {} Test does not exist'.format(args.test))
-        exit(1)
+        if(not path_exists(os.path.expandvars(path))):
+            print('-E- {} Test does not exist'.format(args.test))
+            exit(1)
 
     lMemPath_ = reverse_backslash(os.path.expandvars(path))
     if(args.gui):
