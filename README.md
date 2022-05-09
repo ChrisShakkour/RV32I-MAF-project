@@ -16,24 +16,26 @@ Designinig a Pipelined in-order 5 stage RISC-V core RV32I-MF
 #### [Validation plan](https://github.com/ChrisShakkour/RV32I-MAF-project/blob/main/doc/proj/TaiLung%20validation%20plan.pdf)
 
 ## Getting started
+### prerequisities
+1) a working linux termimnal (WSL, ubuntu, Etc...).
+2) python3 or higher installed [follow this link](https://docs.python-guide.org/starting/install3/linux)
+3) RISC-V GCC toolchain installed [follow this link](https://github.com/riscv-collab/riscv-gnu-toolchain/blob/master/README.md)
+4) Intel ModelSim simulator installed [follow this link](https://gist.github.com/Razer6/cafc172b5cffae189b4ecda06cf6c64f)
+
 #### clone repo
     git clone https://github.com/ChrisShakkour/RV32I-MAF-project.git 
-
 #### cd and source
     cd RV32I-MAF-project
     source source_me.sh
-
 #### Compile RTL design
     compile_hdl -top CoreTop_TB
-how to use [compile_hdl]()
-
+how to use [compile_hdl](https://github.com/ChrisShakkour/RV32I-MAF-project/blob/main/doc/proj/TaiLung%20TFM.pdf)
 #### compile C code
     compile_gcc -src <some c source file> -elf -txt -mem
-how to use [compile_gcc]()
-
+how to use [compile_gcc](https://github.com/ChrisShakkour/RV32I-MAF-project/blob/main/doc/proj/TaiLung%20TFM.pdf)
 #### System-level simulation
     simulate -test <test name>
-how to use [simulate]()
+how to use [simulate](https://github.com/ChrisShakkour/RV32I-MAF-project/blob/main/doc/proj/TaiLung%20TFM.pdf)
 
 #### Example
     git clone https://github.com/ChrisShakkour/RV32I-MAF-project.git
